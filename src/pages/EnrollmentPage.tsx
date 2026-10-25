@@ -18,6 +18,8 @@ import {
   Users,
   Image as ImageIcon,
   Check,
+  Layers,
+  CalendarCheck,
 } from 'lucide-react';
 import { api } from '../utils/api';
 import {
@@ -28,16 +30,19 @@ import {
   EMPTY_STUDENT_MESSAGE,
 } from '../types';
 import { SchoolLogo } from '../components/SchoolLogo';
+import { StudentIdCard } from '../components/StudentIdCard';
 
 interface EnrollmentPageProps {
   onNavigateToFees?: () => void;
   onNavigateToStudentPortal?: (rollNumber?: string) => void;
+  onNavigateToAttendance?: () => void;
   isAdmin?: boolean;
 }
 
 export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
   onNavigateToFees,
   onNavigateToStudentPortal,
+  onNavigateToAttendance,
   isAdmin = false,
 }) => {
   const [activeTab, setActiveTab] = useState<'admission-form' | 'public-directory'>('admission-form');
@@ -45,6 +50,7 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
   const initialForm = {
     fullName: '',
     fatherName: '',
+    fatherPhone: '',
     dob: '2014-06-15',
     gender: 'Male' as 'Male' | 'Female' | 'Other',
     photoUrl: '', // Mandatory user upload
@@ -52,6 +58,8 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
     address: 'Brewery Road near SBK University, Quetta',
     previousSchool: '',
     admissionClass: 'Level Kids',
+    isDoubleClass: false,
+    secondClass: 'Class 5',
     section: 'A',
     academicSession: '2026-2027',
     admissionDate: new Date().toISOString().split('T')[0],
@@ -89,6 +97,15 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
     } finally {
       setLoadingPublic(false);
     }
+  };
+
+  const getCourseFee = (courseName: string): number => {
+    if (!courseName) return 1500;
+    if (courseName.includes('Nazra')) return 600;
+    if (courseName.includes('Caligraphy')) return 1000;
+    if (courseName.includes('Tuition') || courseName.startsWith('Class ') || courseName === 'Prep' || courseName === 'Nursery') return 1000;
+    if (courseName.includes('Level')) return 1500;
+    return 1500;
   };
 
   const handleDocToggle = (doc: string) => {
@@ -174,10 +191,15 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
 
     setSubmitting(true);
     try {
+      const enrolledCourses = form.isDoubleClass && form.secondClass
+        ? [form.admissionClass, form.secondClass]
+        : [form.admissionClass];
+
       const res = await api.submitEnrollment(
         {
           fullName: form.fullName.trim(),
           fatherName: form.fatherName.trim(),
+          fatherPhone: form.fatherPhone.trim() || form.phone.trim(),
           dob: form.dob,
           gender: form.gender,
           photoUrl: form.photoUrl,
@@ -185,6 +207,9 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
           address: form.address.trim(),
           previousSchool: form.previousSchool.trim(),
           admissionClass: form.admissionClass,
+          secondClass: form.isDoubleClass ? form.secondClass : undefined,
+          isDoubleClass: form.isDoubleClass,
+          enrolledCourses,
           section: form.section,
           academicSession: form.academicSession,
           admissionDate: form.admissionDate,
@@ -307,9 +332,17 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
                         <span>{st.fullName}</span>
                       </td>
                       <td className="p-3.5">
-                        <span className="px-2.5 py-1 rounded-md bg-yellow-100 text-emerald-950 font-bold border border-yellow-300">
-                          {st.admissionClass}
-                        </span>
+                        <div className="flex flex-col gap-1 items-start">
+                          <span className="px-2.5 py-1 rounded-md bg-yellow-100 text-emerald-950 font-bold border border-yellow-300">
+                            {st.admissionClass}
+                          </span>
+                          {st.secondClass && (
+                            <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-950 font-black text-[10px] border border-amber-300 flex items-center gap-1">
+                              <Layers className="w-2.5 h-2.5 text-amber-700" />
+                              <span>Double: {st.secondClass}</span>
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="p-3.5 font-mono">{st.section}</td>
                       <td className="p-3.5 font-mono text-slate-500">{st.admissionDate}</td>
@@ -371,11 +404,19 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
                   </span>
                   <div>
                     <p className="text-sm font-bold text-emerald-950">
-                      Level / Class:{' '}
+                      Primary Class:{' '}
                       <span className="bg-yellow-300/80 px-2.5 py-0.5 rounded text-emerald-950 font-black">
                         {confirmationData.application.admissionClass}
                       </span>
                     </p>
+                    {confirmationData.application.secondClass && (
+                      <p className="text-sm font-bold text-emerald-950 mt-1">
+                        Double Class:{' '}
+                        <span className="bg-amber-400 px-2.5 py-0.5 rounded text-emerald-950 font-black">
+                          {confirmationData.application.secondClass}
+                        </span>
+                      </p>
+                    )}
                     <p className="text-xs text-slate-600 mt-1">
                       Section: {confirmationData.application.section} • Session: {confirmationData.application.academicSession}
                     </p>
@@ -399,34 +440,40 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
                 </div>
               </div>
 
-              {/* Photo & Sync Status */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-emerald-200">
+              {/* Automatic Attendance Register Enrolled Banner */}
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-950 text-white border-2 border-yellow-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-md">
                 <div className="flex items-center gap-3">
-                  <img
-                    src={confirmationData.application.photoUrl}
-                    alt={confirmationData.application.fullName}
-                    className="w-14 h-14 rounded-xl object-cover border-2 border-emerald-500 shadow-sm"
-                  />
+                  <div className="w-10 h-10 rounded-xl bg-yellow-400 text-emerald-950 flex items-center justify-center font-black shrink-0">
+                    <CalendarCheck className="w-5 h-5" />
+                  </div>
                   <div>
-                    <span className="text-xs font-bold text-emerald-950 block">
-                      Uploaded Genuine Photograph
-                    </span>
-                    <span className="text-[10px] text-emerald-700 inline-flex items-center gap-1 font-bold">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                      <span>Verified and stored permanently</span>
-                    </span>
+                    <h4 className="text-xs sm:text-sm font-bold text-yellow-300">
+                      Auto-Enrolled in Student Daily Attendance System!
+                    </h4>
+                    <p className="text-[11px] text-emerald-100">
+                      Roll Number <strong>#{confirmationData.student?.rollNumber || '1'}</strong> is now instantly active in the attendance register for authorized check-in & check-out.
+                    </p>
                   </div>
                 </div>
 
-                <div className="text-right">
-                  <span className="text-xs font-bold text-emerald-900 block">
-                    Fee Management 2026 Synchronized
-                  </span>
-                  <span className="text-[10px] text-slate-500">
-                    Fee account created automatically in database.
-                  </span>
-                </div>
+                {onNavigateToAttendance && (
+                  <button
+                    type="button"
+                    onClick={onNavigateToAttendance}
+                    className="px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-emerald-950 font-black text-xs rounded-xl uppercase tracking-wider flex items-center gap-1.5 shadow transition-all cursor-pointer shrink-0"
+                  >
+                    <CalendarCheck className="w-4 h-4" />
+                    <span>Open Attendance Register</span>
+                  </button>
+                )}
               </div>
+
+              {/* Generated Bi-Sided Student ID Card Component */}
+              {confirmationData.student && (
+                <div className="pt-2">
+                  <StudentIdCard student={confirmationData.student} />
+                </div>
+              )}
 
               {/* Actions */}
               <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-emerald-100">
@@ -436,10 +483,20 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
                   className="px-5 py-2.5 rounded-xl bg-slate-800 text-white text-xs font-bold flex items-center gap-2 hover:bg-slate-900 transition-colors cursor-pointer"
                 >
                   <Printer className="w-4 h-4 text-yellow-400" />
-                  <span>Print Admission Slip</span>
+                  <span>Print Admission Slip & ID Card</span>
                 </button>
 
                 <div className="flex items-center gap-2">
+                  {onNavigateToAttendance && (
+                    <button
+                      type="button"
+                      onClick={onNavigateToAttendance}
+                      className="px-4 py-2 rounded-xl bg-emerald-950 text-yellow-400 hover:bg-emerald-900 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-yellow-400"
+                    >
+                      <CalendarCheck className="w-3.5 h-3.5" />
+                      <span>Daily Attendance</span>
+                    </button>
+                  )}
                   {onNavigateToStudentPortal && confirmationData.student && (
                     <button
                       type="button"
@@ -693,27 +750,31 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
                   </div>
                 </div>
 
+                {/* Primary Class & Section */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-1 sm:col-span-2">
-                    <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider">
-                      Assigned Level or Tuition Class <span className="text-red-500">*</span>
+                    <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider flex items-center justify-between">
+                      <span>Primary Assigned Level or Tuition Class <span className="text-red-500">*</span></span>
+                      <span className="text-[11px] font-mono text-emerald-800 font-black">
+                        Rs. {getCourseFee(form.admissionClass).toLocaleString()}/mo
+                      </span>
                     </label>
                     <select
                       value={form.admissionClass}
                       onChange={(e) => setForm({ ...form, admissionClass: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl border-2 border-emerald-300 text-sm font-bold text-emerald-950 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200 outline-none bg-white"
                     >
-                      <optgroup label="11 Official Learning Levels">
+                      <optgroup label="11 Official Learning Levels (English Grammar & Islamic Studies)">
                         {LEARNING_LEVELS.map((level) => (
                           <option key={level} value={level}>
-                            {level}
+                            {level} — Rs. {getCourseFee(level).toLocaleString()}/mo
                           </option>
                         ))}
                       </optgroup>
                       <optgroup label="Tuition Classes (Nursery to Class 10th)">
                         {TUITION_CLASSES.map((cls) => (
                           <option key={cls} value={cls}>
-                            Tuition Class: {cls}
+                            Tuition: {cls} — Rs. {getCourseFee(cls).toLocaleString()}/subject
                           </option>
                         ))}
                       </optgroup>
@@ -734,6 +795,96 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
                       <option value="C">Section C</option>
                     </select>
                   </div>
+                </div>
+
+                {/* Optional Double Class Choice */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-white border-2 border-amber-300 shadow-xs space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <label className="flex items-start gap-3 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={form.isDoubleClass}
+                        onChange={(e) => setForm({ ...form, isDoubleClass: e.target.checked })}
+                        className="w-5 h-5 mt-0.5 rounded border-2 border-emerald-600 text-emerald-900 focus:ring-yellow-400 accent-emerald-900 cursor-pointer"
+                      />
+                      <div>
+                        <span className="text-xs sm:text-sm font-serif font-black text-emerald-950 flex items-center gap-1.5">
+                          <Layers className="w-4 h-4 text-amber-600" />
+                          <span>Enroll in Double Classes / Dual Program (Optional Choice)</span>
+                        </span>
+                        <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">
+                          Enables taking both English Grammar AND Tuition Classes (or two different tuition levels) simultaneously under ONE unique roll number.
+                        </p>
+                      </div>
+                    </label>
+
+                    <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full shrink-0 ${
+                      form.isDoubleClass ? 'bg-amber-400 text-emerald-950 shadow-xs' : 'bg-slate-100 text-slate-500'
+                    }`}>
+                      {form.isDoubleClass ? '⚡ Double Class Active' : 'Single Class'}
+                    </span>
+                  </div>
+
+                  {form.isDoubleClass && (
+                    <div className="pt-3 border-t border-slate-100 space-y-3 animate-in fade-in">
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-amber-950 uppercase tracking-wider flex items-center justify-between">
+                          <span>Select Second Class / Additional Offering</span>
+                          <span className="text-[11px] font-mono text-amber-900 font-black">
+                            Rs. {getCourseFee(form.secondClass).toLocaleString()}/mo
+                          </span>
+                        </label>
+                        <select
+                          value={form.secondClass}
+                          onChange={(e) => setForm({ ...form, secondClass: e.target.value })}
+                          className="w-full px-4 py-3 rounded-xl border-2 border-amber-400 text-sm font-bold text-emerald-950 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 outline-none bg-amber-50/40"
+                        >
+                          <optgroup label="Tuition Classes (Nursery to Class 10th)">
+                            {TUITION_CLASSES.map((cls) => (
+                              <option key={cls} value={cls}>
+                                Tuition: {cls} — Rs. {getCourseFee(cls).toLocaleString()}/subject
+                              </option>
+                            ))}
+                          </optgroup>
+                          <optgroup label="11 Official Learning Levels (English Grammar & Quranic Studies)">
+                            {LEARNING_LEVELS.map((level) => (
+                              <option key={level} value={level}>
+                                {level} — Rs. {getCourseFee(level).toLocaleString()}/mo
+                              </option>
+                            ))}
+                          </optgroup>
+                        </select>
+                      </div>
+
+                      {/* Live Combined Fee Breakdown Box */}
+                      <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-950 via-emerald-900 to-green-950 text-white border-2 border-yellow-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md">
+                        <div className="space-y-1">
+                          <span className="text-[10px] text-yellow-300 uppercase tracking-widest font-black block">
+                            Combined Dual-Class Monthly Fee Calculation
+                          </span>
+                          <p className="text-emerald-100 text-xs">
+                            Primary ({form.admissionClass}): <strong>Rs. {getCourseFee(form.admissionClass).toLocaleString()}</strong> + Second ({form.secondClass}): <strong>Rs. {getCourseFee(form.secondClass).toLocaleString()}</strong>
+                          </p>
+                        </div>
+                        <div className="text-left sm:text-right">
+                          <span className="text-[10px] text-yellow-300 font-semibold block uppercase">Total Monthly Tuition</span>
+                          <span className="text-2xl font-black font-mono text-yellow-400">
+                            Rs. {(getCourseFee(form.admissionClass) + getCourseFee(form.secondClass)).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-[10px] text-emerald-950 space-y-0.5">
+                        <div className="font-bold flex items-center gap-1 text-emerald-900">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Single Roll Number & Dual Attendance Session Tracking:</span>
+                        </div>
+                        <p className="text-slate-600">
+                          Both classes will be assigned to <strong>one unique roll number</strong> without duplicate records. Your ID card will feature both courses, and attendance can be scanned separately for each session.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

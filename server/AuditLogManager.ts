@@ -1,4 +1,4 @@
-import { AuditLog, AuditActionType, AuditSeverity } from '../src/types';
+import type { AuditLog, AuditActionType, AuditSeverity } from '../src/types.ts';
 
 export interface AuditLogQueryFilters {
   actionType?: string;

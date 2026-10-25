@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import {
+import type {
   Student,
   Teacher,
   EnrollmentApplication,
@@ -18,11 +18,13 @@ import {
   Month2026,
   AuditActionType,
   AuditSeverity,
-  LEARNING_LEVELS,
-  TUITION_CLASSES,
   QrScanResult,
   CourseAttendanceSummary,
-} from '../src/types';
+} from '../src/types.ts';
+import {
+  LEARNING_LEVELS,
+  TUITION_CLASSES,
+} from '../src/types.ts';
 import { auditLogManager } from './AuditLogManager.ts';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');

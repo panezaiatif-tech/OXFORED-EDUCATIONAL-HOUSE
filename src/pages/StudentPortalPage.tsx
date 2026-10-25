@@ -18,8 +18,11 @@ import {
   ChevronRight,
   Eye,
   AlertCircle,
+  QrCode,
+  Layers,
 } from 'lucide-react';
 import { api } from '../utils/api';
+import { StudentIdCard } from '../components/StudentIdCard';
 import {
   Student,
   ExamResult,
@@ -50,7 +53,7 @@ export const StudentPortalPage: React.FC<StudentPortalPageProps> = ({
 
   // Active Sub-Tab
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'academics' | 'fees' | 'attendance' | 'timetable' | 'ai'
+    'overview' | 'idcard' | 'academics' | 'fees' | 'attendance' | 'timetable' | 'ai'
   >('overview');
 
   // Student Loaded Data
@@ -242,9 +245,15 @@ export const StudentPortalPage: React.FC<StudentPortalPageProps> = ({
               </p>
               <div className="flex flex-wrap items-center gap-3 text-xs text-emerald-100 font-medium pt-1">
                 <span className="bg-emerald-900/80 px-2.5 py-1 rounded-lg border border-yellow-400/50 font-mono text-yellow-300 font-bold">
-                  {activeStudent.rollNumber}
+                  Roll #{activeStudent.rollNumber}
                 </span>
                 <span>{activeStudent.admissionClass} — Section {activeStudent.section}</span>
+                {activeStudent.secondClass && (
+                  <span className="bg-amber-400 text-emerald-950 font-black px-2 py-0.5 rounded-md flex items-center gap-1 shadow-2xs">
+                    <Layers className="w-3 h-3" />
+                    <span>Double Class: {activeStudent.secondClass}</span>
+                  </span>
+                )}
                 <span>Session {activeStudent.academicSession}</span>
               </div>
             </div>
@@ -272,6 +281,7 @@ export const StudentPortalPage: React.FC<StudentPortalPageProps> = ({
         <div className="flex items-center gap-2 mt-6 overflow-x-auto pt-4 border-t border-emerald-800 scrollbar-none">
           {[
             { id: 'overview', label: 'Dashboard Overview', icon: User },
+            { id: 'idcard', label: 'Student ID Card (Bi-Sided)', icon: QrCode },
             { id: 'academics', label: 'Exam Results & Marksheets', icon: Award },
             { id: 'fees', label: '2026 Fee Account & Receipts', icon: CreditCard },
             { id: 'attendance', label: 'Daily Attendance History', icon: CalendarCheck },
@@ -376,6 +386,13 @@ export const StudentPortalPage: React.FC<StudentPortalPageProps> = ({
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* 1.5. STUDENT ID CARD (FRONT & BACK) */}
+      {activeTab === 'idcard' && (
+        <div className="bg-white rounded-3xl border-2 border-emerald-100 p-6 sm:p-8 shadow-sm space-y-6">
+          <StudentIdCard student={activeStudent} />
         </div>
       )}
 

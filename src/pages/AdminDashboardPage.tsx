@@ -550,9 +550,17 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
                         <td className="p-3.5 font-bold text-slate-900">{st.fullName}</td>
                         <td className="p-3.5 text-slate-600">{st.fatherName}</td>
                         <td className="p-3.5">
-                          <span className="px-2.5 py-1 rounded-md bg-yellow-100 text-emerald-950 font-bold border border-yellow-300">
-                            {st.admissionClass}
-                          </span>
+                          <div className="flex flex-col gap-1 items-start">
+                            <span className="px-2.5 py-1 rounded-md bg-yellow-100 text-emerald-950 font-bold border border-yellow-300">
+                              {st.admissionClass}
+                            </span>
+                            {st.secondClass && (
+                              <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-950 font-black text-[10px] border border-amber-300 flex items-center gap-1">
+                                <Layers className="w-2.5 h-2.5 text-amber-700" />
+                                <span>Double: {st.secondClass}</span>
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="p-3.5 font-mono text-slate-500">{st.admissionDate}</td>
                         <td className="p-3.5 text-center">
