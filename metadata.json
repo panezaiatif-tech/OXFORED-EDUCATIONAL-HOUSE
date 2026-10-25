@@ -1,0 +1,6 @@
+{
+  "name": "Oxfored Educational House",
+  "description": "Digital School Management System for Oxfored Educational House with student enrollment, automatic roll numbers, 2026 fee management, attendance, results, and AI assistance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

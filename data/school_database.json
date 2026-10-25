@@ -1,0 +1,717 @@
+{
+  "settings": {
+    "schoolName": "OXFORED EDUCATIONAL HOUSE",
+    "tagline": "Excellence in Education, Character Building & Modern Learning",
+    "developerCredit": "MADE BY ATIF PANEZAI PROFESSIONEL APP AND WEB DEVELOPER OF PAKISTAN",
+    "location": "BEREWRY ROAD QUETTA NEAR SBK UNIVERSITY APPOSITE MICRO COLONI",
+    "phone": "03327185311",
+    "easypaisaNumber": "03327185311",
+    "email": "info@oxfored.edu.pk",
+    "admissionOpen": true,
+    "academicYear": "2026-2027",
+    "admissionFeeDefault": 5000,
+    "monthlyFeeDefault": {
+      "Level Kids": 1500,
+      "Level Biggener": 1500,
+      "Level One": 1500,
+      "Level Two": 1500,
+      "Level Three": 1500,
+      "Level Four": 1500,
+      "Level Five": 1500,
+      "Level Six": 1500,
+      "Level Advance": 1500,
+      "Nazra e Quran": 600,
+      "Caligraphy": 1000,
+      "Nursery": 1000,
+      "Prep": 1000,
+      "Class 1": 1000,
+      "Class 2": 1000,
+      "Class 3": 1000,
+      "Class 4": 1000,
+      "Class 5": 1000,
+      "Class 6": 1000,
+      "Class 7": 1000,
+      "Class 8": 1000,
+      "Class 9": 1000,
+      "Class 10": 1000
+    }
+  },
+  "students": [],
+  "teachers": [
+    {
+      "id": "tch_01",
+      "staffId": "OX-TCH-001",
+      "fullName": "SIR ABBAS",
+      "designation": "Senior Faculty & Head of English Department",
+      "department": "English Language & Board Tuition Academy",
+      "subject": "English Grammar (Kids to Advance) & Board Tuitions (8th to 10th)",
+      "assignedSubjects": [
+        "English Grammar",
+        "Senior Board Tuitions (Class 8th to 10th)"
+      ],
+      "assignedLevelsOrClasses": [
+        "Level Kids",
+        "Level Biggener",
+        "Level One",
+        "Level Two",
+        "Level Three",
+        "Level Four",
+        "Level Five",
+        "Level Six",
+        "Level Advance",
+        "Class 8",
+        "Class 9",
+        "Class 10"
+      ],
+      "phone": "03327185311",
+      "email": "sir.abbas@oxfored.edu.pk",
+      "joiningDate": "2022-01-10",
+      "status": "Active",
+      "qualification": "M.A. English Linguistics & Advanced Grammar Specialist"
+    },
+    {
+      "id": "tch_02",
+      "staffId": "OX-TCH-002",
+      "fullName": "SIR SHARIFULLAH",
+      "designation": "Master Instructor of Quranic Sciences & Islamic Calligraphy",
+      "department": "Quranic Studies & Calligraphic Arts",
+      "subject": "Caligraphy & Nazra e Quran",
+      "assignedSubjects": [
+        "Caligraphy",
+        "Nazra e Quran"
+      ],
+      "assignedLevelsOrClasses": [
+        "Caligraphy",
+        "Nazra e Quran"
+      ],
+      "phone": "03327185311",
+      "email": "sir.sharifullah@oxfored.edu.pk",
+      "joiningDate": "2022-01-15",
+      "status": "Active",
+      "qualification": "Sanad-e-Faraghat, Hafiz-e-Quran & Certified Khatat"
+    },
+    {
+      "id": "tch_03",
+      "staffId": "OX-TCH-003",
+      "fullName": "SIR SHAKIR",
+      "designation": "Primary Tuition Specialist & Junior Faculty",
+      "department": "Junior Primary Tuition Academy",
+      "subject": "Tuition Classes (Nursery to Class 4th)",
+      "assignedSubjects": [
+        "Primary Tuitions (Nursery to Class 4)",
+        "English, Urdu, Mathematics, General Science"
+      ],
+      "assignedLevelsOrClasses": [
+        "Nursery",
+        "Prep",
+        "Class 1",
+        "Class 2",
+        "Class 3",
+        "Class 4"
+      ],
+      "phone": "03327185311",
+      "email": "sir.shakir@oxfored.edu.pk",
+      "joiningDate": "2023-02-01",
+      "status": "Active",
+      "qualification": "B.A. Primary Education & Foundational Coaching Expert"
+    },
+    {
+      "id": "tch_04",
+      "staffId": "OX-TCH-004",
+      "fullName": "SIR ATLAS",
+      "designation": "Middle School Tuition Specialist & Faculty Mentor",
+      "department": "Middle School Tuition Academy",
+      "subject": "Tuition Classes (Class 5th to 7th Class)",
+      "assignedSubjects": [
+        "Middle School Tuitions (Class 5 to 7th Class)",
+        "Mathematics, Science, English, Urdu & Social Studies"
+      ],
+      "assignedLevelsOrClasses": [
+        "Class 5",
+        "Class 6",
+        "Class 7"
+      ],
+      "phone": "03327185311",
+      "email": "sir.atlas@oxfored.edu.pk",
+      "joiningDate": "2023-02-01",
+      "status": "Active",
+      "qualification": "B.Sc. Mathematics & Middle School Pedagogy Specialist"
+    }
+  ],
+  "applications": [],
+  "studentAttendance": [],
+  "teacherAttendance": [
+    {
+      "id": "att_tch_tch_01_2026-10-13",
+      "teacherId": "tch_01",
+      "staffId": "OX-TCH-001",
+      "teacherName": "Sir Asadullah Kakar",
+      "department": "Mathematics & Statistics",
+      "date": "2026-10-13",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_02_2026-10-13",
+      "teacherId": "tch_02",
+      "staffId": "OX-TCH-002",
+      "teacherName": "Madam Shaista Durrani",
+      "department": "Languages",
+      "date": "2026-10-13",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_03_2026-10-13",
+      "teacherId": "tch_03",
+      "staffId": "OX-TCH-003",
+      "teacherName": "Sir Engineer Tariq Shah",
+      "department": "Science & Technology",
+      "date": "2026-10-13",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_04_2026-10-13",
+      "teacherId": "tch_04",
+      "staffId": "OX-TCH-004",
+      "teacherName": "Madam Rabia Khanum",
+      "department": "Natural Sciences",
+      "date": "2026-10-13",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_05_2026-10-13",
+      "teacherId": "tch_05",
+      "staffId": "OX-TCH-005",
+      "teacherName": "Qari Hafiz Abdul Rehman",
+      "department": "Humanities & Theology",
+      "date": "2026-10-13",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_06_2026-10-13",
+      "teacherId": "tch_06",
+      "staffId": "OX-TCH-006",
+      "teacherName": "Sir Farooq Ahmed Rind",
+      "department": "Languages & Social Studies",
+      "date": "2026-10-13",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_01_2026-10-14",
+      "teacherId": "tch_01",
+      "staffId": "OX-TCH-001",
+      "teacherName": "Sir Asadullah Kakar",
+      "department": "Mathematics & Statistics",
+      "date": "2026-10-14",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_02_2026-10-14",
+      "teacherId": "tch_02",
+      "staffId": "OX-TCH-002",
+      "teacherName": "Madam Shaista Durrani",
+      "department": "Languages",
+      "date": "2026-10-14",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_03_2026-10-14",
+      "teacherId": "tch_03",
+      "staffId": "OX-TCH-003",
+      "teacherName": "Sir Engineer Tariq Shah",
+      "department": "Science & Technology",
+      "date": "2026-10-14",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_04_2026-10-14",
+      "teacherId": "tch_04",
+      "staffId": "OX-TCH-004",
+      "teacherName": "Madam Rabia Khanum",
+      "department": "Natural Sciences",
+      "date": "2026-10-14",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Leave Approved",
+      "leaveDetails": "Medical checkup leave",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_05_2026-10-14",
+      "teacherId": "tch_05",
+      "staffId": "OX-TCH-005",
+      "teacherName": "Qari Hafiz Abdul Rehman",
+      "department": "Humanities & Theology",
+      "date": "2026-10-14",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_06_2026-10-14",
+      "teacherId": "tch_06",
+      "staffId": "OX-TCH-006",
+      "teacherName": "Sir Farooq Ahmed Rind",
+      "department": "Languages & Social Studies",
+      "date": "2026-10-14",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_01_2026-10-15",
+      "teacherId": "tch_01",
+      "staffId": "OX-TCH-001",
+      "teacherName": "Sir Asadullah Kakar",
+      "department": "Mathematics & Statistics",
+      "date": "2026-10-15",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_02_2026-10-15",
+      "teacherId": "tch_02",
+      "staffId": "OX-TCH-002",
+      "teacherName": "Madam Shaista Durrani",
+      "department": "Languages",
+      "date": "2026-10-15",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_03_2026-10-15",
+      "teacherId": "tch_03",
+      "staffId": "OX-TCH-003",
+      "teacherName": "Sir Engineer Tariq Shah",
+      "department": "Science & Technology",
+      "date": "2026-10-15",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_04_2026-10-15",
+      "teacherId": "tch_04",
+      "staffId": "OX-TCH-004",
+      "teacherName": "Madam Rabia Khanum",
+      "department": "Natural Sciences",
+      "date": "2026-10-15",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_05_2026-10-15",
+      "teacherId": "tch_05",
+      "staffId": "OX-TCH-005",
+      "teacherName": "Qari Hafiz Abdul Rehman",
+      "department": "Humanities & Theology",
+      "date": "2026-10-15",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_06_2026-10-15",
+      "teacherId": "tch_06",
+      "staffId": "OX-TCH-006",
+      "teacherName": "Sir Farooq Ahmed Rind",
+      "department": "Languages & Social Studies",
+      "date": "2026-10-15",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal Office"
+    },
+    {
+      "id": "att_tch_tch_02_2026-10-17_1792249921551",
+      "teacherId": "tch_02",
+      "staffId": "OX-TCH-002",
+      "teacherName": "SIR SHARIFULLAH",
+      "assignedSubjects": "Caligraphy & Nazra e Quran",
+      "department": "Quranic Studies & Calligraphic Arts",
+      "date": "2026-10-17",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal / Admin (Authorized Entry)"
+    },
+    {
+      "id": "att_tch_tch_01_2026-10-17_1792249924331",
+      "teacherId": "tch_01",
+      "staffId": "OX-TCH-001",
+      "teacherName": "SIR ABBAS",
+      "assignedSubjects": "English Grammar & Tuition Classes (Prep to Class 10th)",
+      "department": "English Language & Tuition Academy",
+      "date": "2026-10-17",
+      "checkInTime": "07:45 AM",
+      "checkOutTime": "02:00 PM",
+      "status": "Present",
+      "markedBy": "Principal / Admin (Authorized Entry)"
+    }
+  ],
+  "examResults": [],
+  "feeAccounts2026": [],
+  "monthlyFees2026": [],
+  "feeReceipts": [],
+  "onlinePayments": [],
+  "timetables": [
+    {
+      "id": "tt_1",
+      "class": "Class 9",
+      "section": "A",
+      "day": "Monday",
+      "subject": "Mathematics",
+      "teacherName": "Sir Asadullah Kakar",
+      "startTime": "08:00 AM",
+      "endTime": "08:45 AM",
+      "room": "Room 201"
+    },
+    {
+      "id": "tt_2",
+      "class": "Class 9",
+      "section": "A",
+      "day": "Monday",
+      "subject": "English",
+      "teacherName": "Madam Shaista Durrani",
+      "startTime": "08:45 AM",
+      "endTime": "09:30 AM",
+      "room": "Room 201"
+    },
+    {
+      "id": "tt_3",
+      "class": "Class 9",
+      "section": "A",
+      "day": "Monday",
+      "subject": "Physics",
+      "teacherName": "Sir Engineer Tariq Shah",
+      "startTime": "09:30 AM",
+      "endTime": "10:15 AM",
+      "room": "Physics Lab 1"
+    },
+    {
+      "id": "tt_4",
+      "class": "Class 9",
+      "section": "A",
+      "day": "Monday",
+      "subject": "Chemistry",
+      "teacherName": "Madam Rabia Khanum",
+      "startTime": "10:45 AM",
+      "endTime": "11:30 AM",
+      "room": "Chemistry Lab"
+    },
+    {
+      "id": "tt_5",
+      "class": "Class 9",
+      "section": "A",
+      "day": "Monday",
+      "subject": "Computer Science",
+      "teacherName": "Sir Engineer Tariq Shah",
+      "startTime": "11:30 AM",
+      "endTime": "12:15 PM",
+      "room": "Computer Lab"
+    },
+    {
+      "id": "tt_6",
+      "class": "Class 9",
+      "section": "A",
+      "day": "Monday",
+      "subject": "Islamic Studies",
+      "teacherName": "Qari Hafiz Abdul Rehman",
+      "startTime": "12:15 PM",
+      "endTime": "01:00 PM",
+      "room": "Room 201"
+    },
+    {
+      "id": "tt_7",
+      "class": "Class 10",
+      "section": "A",
+      "day": "Monday",
+      "subject": "Computer Science",
+      "teacherName": "Sir Engineer Tariq Shah",
+      "startTime": "08:00 AM",
+      "endTime": "08:45 AM",
+      "room": "Computer Lab"
+    },
+    {
+      "id": "tt_8",
+      "class": "Class 10",
+      "section": "A",
+      "day": "Monday",
+      "subject": "Mathematics",
+      "teacherName": "Sir Asadullah Kakar",
+      "startTime": "08:45 AM",
+      "endTime": "09:30 AM",
+      "room": "Room 202"
+    }
+  ],
+  "announcements": [
+    {
+      "id": "anc_1",
+      "title": "Admissions Open for Session 2026-2027",
+      "category": "Admissions",
+      "content": "Oxfored Educational House announces admissions open from Nursery to Class 10 for the Academic Year 2026. Online enrollment forms are available now. Limited seats available in Science & Computer streams.",
+      "targetAudience": "all",
+      "publishDate": "2026-01-05",
+      "isUrgent": false,
+      "author": "Principal Office"
+    },
+    {
+      "id": "anc_2",
+      "title": "Second Periodic Tests Schedule & Syllabus Announced",
+      "category": "Exams",
+      "content": "The 2nd Periodic Tests for classes 6 to 10 will commence from October 28, 2026. Students are advised to collect their date sheets from their respective class in-charge or check the online portal.",
+      "targetAudience": "students",
+      "publishDate": "2026-10-10",
+      "isUrgent": true,
+      "author": "Controller of Examinations"
+    },
+    {
+      "id": "anc_3",
+      "title": "2026 Fee Accounts Synchronization & Online Payment Portal",
+      "category": "Fee Reminder",
+      "content": "Parents and guardians are requested to clear outstanding tuition fees for the month of October before the 10th of each month to avoid late fee surcharges.",
+      "targetAudience": "all",
+      "publishDate": "2026-10-01",
+      "isUrgent": false,
+      "author": "Accounts Department"
+    },
+    {
+      "id": "anc_4",
+      "title": "Faculty Professional Development Workshop on Modern STEM Pedagogy",
+      "category": "Notices",
+      "content": "All teaching faculty members are scheduled to attend the modern pedagogy and computer-integrated teaching workshop this Saturday at 02:30 PM in the Main Auditorium.",
+      "targetAudience": "teachers",
+      "publishDate": "2026-10-12",
+      "isUrgent": false,
+      "author": "Academic Coordinator"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "audit_1792252152705_917",
+      "action": "FEE_PAYMENT_RECORDED",
+      "actionType": "FEE_PAYMENT_RECORDED",
+      "performedBy": "Accounts Officer Atif Panezai",
+      "role": "Administrator",
+      "targetEntity": "FeeAccount",
+      "targetId": "stu_1004",
+      "targetName": "Ayesha Noor Mengal",
+      "details": "Received fee payment of Rs. 4,800 from Ayesha Noor Mengal (Roll: OX-2026-CLASS8-0001). Receipt: REC-2026-152704.",
+      "newState": {
+        "amountPaid": 4800,
+        "receiptNumber": "REC-2026-152704",
+        "remainingBalance": 49200
+      },
+      "severity": "info",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-17T15:49:12.705Z"
+    },
+    {
+      "id": "audit_1792251880594_2069",
+      "action": "FEE_PAYMENT_RECORDED",
+      "actionType": "FEE_PAYMENT_RECORDED",
+      "performedBy": "Accounts Officer Atif Panezai",
+      "role": "Administrator",
+      "targetEntity": "FeeAccount",
+      "targetId": "stu_1001",
+      "targetName": "Muhammad Hamza Panezai",
+      "details": "Received fee payment of Rs. 5,500 from Muhammad Hamza Panezai (Roll: OX-2026-CLASS9-0001). Receipt: REC-2026-880558.",
+      "newState": {
+        "amountPaid": 5500,
+        "receiptNumber": "REC-2026-880558",
+        "remainingBalance": 44000
+      },
+      "severity": "info",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-17T15:44:40.594Z"
+    },
+    {
+      "id": "audit_1792249924331_8456",
+      "action": "TEACHER_ATTENDANCE_RECORDED",
+      "actionType": "TEACHER_ATTENDANCE_RECORDED",
+      "performedBy": "Principal / Admin (Authorized Entry)",
+      "role": "Administrator",
+      "targetEntity": "TeacherAttendance",
+      "targetId": "tch_01",
+      "targetName": "SIR ABBAS",
+      "details": "Recorded attendance for faculty member SIR ABBAS (OX-TCH-001) on 2026-10-17: Status Present, Check-in: 07:45 AM",
+      "newState": {
+        "id": "att_tch_tch_01_2026-10-17_1792249924331",
+        "teacherId": "tch_01",
+        "staffId": "OX-TCH-001",
+        "teacherName": "SIR ABBAS",
+        "assignedSubjects": "English Grammar & Tuition Classes (Prep to Class 10th)",
+        "department": "English Language & Tuition Academy",
+        "date": "2026-10-17",
+        "checkInTime": "07:45 AM",
+        "checkOutTime": "02:00 PM",
+        "status": "Present",
+        "markedBy": "Principal / Admin (Authorized Entry)"
+      },
+      "severity": "info",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-17T15:12:04.331Z"
+    },
+    {
+      "id": "audit_1792249921551_1398",
+      "action": "TEACHER_ATTENDANCE_RECORDED",
+      "actionType": "TEACHER_ATTENDANCE_RECORDED",
+      "performedBy": "Principal / Admin (Authorized Entry)",
+      "role": "Administrator",
+      "targetEntity": "TeacherAttendance",
+      "targetId": "tch_02",
+      "targetName": "SIR SHARIFULLAH",
+      "details": "Recorded attendance for faculty member SIR SHARIFULLAH (OX-TCH-002) on 2026-10-17: Status Present, Check-in: 07:45 AM",
+      "newState": {
+        "id": "att_tch_tch_02_2026-10-17_1792249921551",
+        "teacherId": "tch_02",
+        "staffId": "OX-TCH-002",
+        "teacherName": "SIR SHARIFULLAH",
+        "assignedSubjects": "Caligraphy & Nazra e Quran",
+        "department": "Quranic Studies & Calligraphic Arts",
+        "date": "2026-10-17",
+        "checkInTime": "07:45 AM",
+        "checkOutTime": "02:00 PM",
+        "status": "Present",
+        "markedBy": "Principal / Admin (Authorized Entry)"
+      },
+      "severity": "info",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-17T15:12:01.551Z"
+    },
+    {
+      "id": "audit_1792249231268_4209",
+      "action": "SUBMIT_ENROLLMENT",
+      "actionType": "SETTINGS_UPDATED",
+      "performedBy": "Online Applicant",
+      "role": "Administrator",
+      "details": "Submitted admission application for shahzad khan in Class 9",
+      "severity": "warning",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-17T15:00:31.268Z"
+    },
+    {
+      "id": "log_1",
+      "action": "SYSTEM_INITIALIZATION",
+      "actionType": "SYSTEM_INITIALIZATION",
+      "performedBy": "System Administrator (Atif Panezai)",
+      "role": "Super Administrator",
+      "targetEntity": "System",
+      "severity": "info",
+      "details": "Oxfored Educational House School Management Database initialized successfully with 2026 Academic Year schema.",
+      "timestamp": "2026-01-01T08:00:00Z"
+    },
+    {
+      "id": "log_2",
+      "action": "APPLICATION_APPROVED",
+      "actionType": "APPLICATION_APPROVED",
+      "performedBy": "Admin Principal",
+      "role": "Principal Office",
+      "targetEntity": "Student",
+      "targetId": "stu_1001",
+      "targetName": "Muhammad Hamza Panezai",
+      "severity": "warning",
+      "details": "Student Muhammad Hamza Panezai admitted to Class 9-A. Roll number OX-2026-CLASS9-0001 auto-generated & Fee Account linked.",
+      "newState": {
+        "rollNumber": "OX-2026-CLASS9-0001",
+        "class": "Class 9",
+        "section": "A"
+      },
+      "timestamp": "2026-01-10T09:15:00Z"
+    },
+    {
+      "id": "log_3",
+      "action": "FEE_PAYMENT_RECORDED",
+      "actionType": "FEE_PAYMENT_RECORDED",
+      "performedBy": "Accounts Officer",
+      "role": "Finance Staff",
+      "targetEntity": "FeeAccount",
+      "targetId": "stu_1001",
+      "targetName": "Muhammad Hamza Panezai",
+      "severity": "info",
+      "details": "Receipt OX-REC-2026-1001 issued for Muhammad Hamza Panezai. Paid Rs. 20,200.",
+      "newState": {
+        "amountPaid": 20200,
+        "receipt": "OX-REC-2026-1001"
+      },
+      "timestamp": "2026-01-15T10:00:00Z"
+    },
+    {
+      "id": "log_4",
+      "action": "FEE_CONFIG_UPDATED",
+      "actionType": "FEE_CONFIG_UPDATED",
+      "performedBy": "Finance Head",
+      "role": "Administrator",
+      "targetEntity": "FeeAccount",
+      "targetId": "stu_1001",
+      "targetName": "Muhammad Hamza Panezai",
+      "severity": "critical",
+      "details": "Scholarship waiver applied: Rs. 500 discount configured for position holder.",
+      "previousState": {
+        "discountsOrWaivers": 0,
+        "totalFeeDue": 72200
+      },
+      "newState": {
+        "discountsOrWaivers": 500,
+        "totalFeeDue": 71700
+      },
+      "timestamp": "2026-01-20T11:30:00Z"
+    },
+    {
+      "id": "log_5",
+      "action": "MANUAL_ATTENDANCE_CORRECTION",
+      "actionType": "MANUAL_ATTENDANCE_CORRECTION",
+      "performedBy": "Sir Asadullah Kakar",
+      "role": "Class In-charge",
+      "targetEntity": "StudentAttendance",
+      "targetId": "stu_1004",
+      "targetName": "Ayesha Noor Mengal",
+      "severity": "critical",
+      "details": "Manual attendance correction for Ayesha Noor Mengal on 2026-10-14: changed from Absent to Late (Traffic delay on Brewery Road approved by Principal).",
+      "previousState": {
+        "status": "Absent"
+      },
+      "newState": {
+        "status": "Late"
+      },
+      "timestamp": "2026-10-14T09:05:00Z"
+    }
+  ],
+  "nextPermanentRollNumber": 1
+}
