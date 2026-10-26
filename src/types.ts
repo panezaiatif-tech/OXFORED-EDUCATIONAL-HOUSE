@@ -76,6 +76,10 @@ export interface Student {
   qrCodeToken: string; // Unique secure verification signature for attendance scanning
   qrCodeActive: boolean; // Deactivated when card lost/replaced
   requiredDocuments: string[];
+  previousRollNumber?: string;
+  departureReason?: 'Voluntary Departure' | 'Fee Non-Payment Removal' | 'Relocation' | 'Disciplinary Expulsion' | 'Course Completed';
+  departureDate?: string;
+  departureNotes?: string;
   createdAt: string;
   photoVerified?: boolean;
   verificationNotes?: string;
@@ -335,6 +339,8 @@ export type AuditActionType =
   | 'EXAM_RESULT_SAVED'
   | 'STUDENT_RECORD_MODIFIED'
   | 'STUDENT_LEVEL_CHANGED'
+  | 'STUDENT_ROLL_REASSIGNED'
+  | 'STUDENT_DEPARTURE_PROCESSED'
   | 'ONLINE_PAYMENT_SUBMITTED'
   | 'ONLINE_PAYMENT_VERIFIED'
   | 'SETTINGS_UPDATED'

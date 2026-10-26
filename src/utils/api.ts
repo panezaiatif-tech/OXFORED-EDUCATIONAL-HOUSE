@@ -37,27 +37,26 @@ export const api = {
     admissionClass?: string;
     section?: string;
     search?: string;
+    status?: string;
+    includeWithdrawn?: boolean;
   }): Promise<Student[]> {
-    const res = await fetch('/api/students');
+    const params = new URLSearchParams();
+    if (filters?.class) params.set('class', filters.class);
+    if (filters?.admissionClass) params.set('admissionClass', filters.admissionClass);
+    if (filters?.section) params.set('section', filters.section);
+    if (filters?.status) params.set('status', filters.status);
+    if (filters?.includeWithdrawn !== undefined) params.set('includeWithdrawn', String(filters.includeWithdrawn));
+    if (filters?.search) params.set('search', filters.search);
+
+    const qs = params.toString() ? `?${params.toString()}` : '';
+    const res = await fetch(`/api/students${qs}`);
     const all: Student[] = await res.json();
-    if (!filters) return all;
-    const targetClass = filters.admissionClass || filters.class;
-    return all.filter((s) => {
-      if (targetClass && targetClass !== 'All') {
-        const matchesPrimary = s.admissionClass === targetClass;
-        const matchesSecond = s.secondClass === targetClass;
-        const matchesCourse = s.enrolledCourses && s.enrolledCourses.some(
-          (c) => c === targetClass || c.includes(targetClass) || targetClass.includes(c)
-        );
-        if (!matchesPrimary && !matchesSecond && !matchesCourse) return false;
-      }
-      if (filters.section && filters.section !== 'All' && s.section !== filters.section) return false;
-      if (filters.search) {
-        const q = filters.search.toLowerCase();
-        if (!s.fullName.toLowerCase().includes(q) && !s.rollNumber.toLowerCase().includes(q)) return false;
-      }
-      return true;
-    });
+    return all;
+  },
+  async getVacatedRollNumbers(): Promise<string[]> {
+    const res = await fetch('/api/students/vacated-rolls');
+    if (!res.ok) return [];
+    return res.json();
   },
   async getStudentById(id: string): Promise<Student> {
     const res = await fetch(`/api/students/${id}`);
@@ -83,6 +82,53 @@ export const api = {
     if (!res.ok) {
       const err = await res.json();
       throw new Error(err.error || 'Failed to update student');
+    }
+    return res.json();
+  },
+  async reassignRollNumber(
+    id: string,
+    payload: { newRollNumber: string; reason: string; authorizedBy?: string }
+  ): Promise<Student> {
+    const res = await fetch(`/api/students/${id}/reassign-roll`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to reassign roll number');
+    }
+    return res.json();
+  },
+  async processStudentDeparture(
+    id: string,
+    payload: {
+      reason: string;
+      notes?: string;
+      releaseRollNumber?: boolean;
+      authorizedBy?: string;
+    }
+  ): Promise<{ student: Student; releasedRollNumber?: string }> {
+    const res = await fetch(`/api/students/${id}/departure`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to process student departure');
+    }
+    return res.json();
+  },
+  async regenerateStudentQr(id: string, authorizedBy?: string): Promise<Student> {
+    const res = await fetch(`/api/students/${id}/regenerate-qr`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ authorizedBy }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to regenerate student QR code');
     }
     return res.json();
   },

@@ -20,6 +20,12 @@ import {
   Check,
   Layers,
   CalendarCheck,
+  Search,
+  Filter,
+  Eye,
+  X,
+  ExternalLink,
+  Award,
 } from 'lucide-react';
 import { api } from '../utils/api';
 import {
@@ -37,6 +43,7 @@ interface EnrollmentPageProps {
   onNavigateToStudentPortal?: (rollNumber?: string) => void;
   onNavigateToAttendance?: () => void;
   isAdmin?: boolean;
+  initialTab?: 'admission-form' | 'public-directory';
 }
 
 export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
@@ -44,8 +51,15 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
   onNavigateToStudentPortal,
   onNavigateToAttendance,
   isAdmin = false,
+  initialTab = 'admission-form',
 }) => {
-  const [activeTab, setActiveTab] = useState<'admission-form' | 'public-directory'>('admission-form');
+  const [activeTab, setActiveTab] = useState<'admission-form' | 'public-directory'>(initialTab);
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
 
   const initialForm = {
     fullName: '',
@@ -80,6 +94,14 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
   // Real students directory (Public list)
   const [publicStudents, setPublicStudents] = useState<Student[]>([]);
   const [loadingPublic, setLoadingPublic] = useState(false);
+  const [directorySearch, setDirectorySearch] = useState('');
+  const [directoryClassFilter, setDirectoryClassFilter] = useState('All');
+  const [selectedStudentForProfile, setSelectedStudentForProfile] = useState<Student | null>(null);
+  const [photoZoomModal, setPhotoZoomModal] = useState<{ url: string; name: string } | null>(null);
+
+  useEffect(() => {
+    loadPublicDirectory();
+  }, []);
 
   useEffect(() => {
     if (activeTab === 'public-directory') {
@@ -223,6 +245,9 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
         student: res.student,
       });
 
+      // Refresh public directory immediately so the new student is live!
+      loadPublicDirectory();
+
       // Reset form fields
       setForm(initialForm);
       setPhotoFileName(null);
@@ -280,23 +305,131 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
 
       {/* ===================== TAB 2: PUBLIC DIRECTORY ===================== */}
       {activeTab === 'public-directory' && (
-        <div className="bg-white rounded-3xl border-2 border-emerald-200 p-6 sm:p-8 shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white rounded-3xl border-2 border-emerald-200 p-6 sm:p-8 shadow-sm space-y-6 animate-in fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-emerald-100">
             <div>
-              <h2 className="text-xl font-serif font-black text-emerald-950">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold mb-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Live Public Roster • Open for Verification</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-serif font-black text-emerald-950">
                 Official Enrolled Students Directory
               </h2>
               <p className="text-xs text-slate-500 mt-1">
-                Publicly verified student list organized by permanent roll number. Confidential information (addresses, guardian contacts, CNIC) is strictly protected.
+                All students enrolled online or at the academy are publicly visible here in real time. Anyone can verify roll numbers, admission dates, and enrolled courses.
               </p>
             </div>
-            <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-100 px-3.5 py-1.5 rounded-full border border-emerald-300">
-              Total Enrolled: {publicStudents.length}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono font-bold text-emerald-900 bg-emerald-100 px-3.5 py-1.5 rounded-full border border-emerald-300">
+                Total Enrolled: {publicStudents.length}
+              </span>
+              <button
+                type="button"
+                onClick={loadPublicDirectory}
+                className="p-1.5 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 transition-colors cursor-pointer"
+                title="Refresh student roster"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* QUICK SUMMARY CARDS */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                Total Enrolled
+              </span>
+              <div className="text-xl font-black text-emerald-950 font-mono">
+                {publicStudents.length}
+              </div>
+              <span className="text-[10px] text-emerald-700 font-bold block">Publicly Visible</span>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-yellow-50/70 border border-yellow-300 space-y-1">
+              <span className="text-[10px] font-bold text-yellow-900 uppercase tracking-wider block">
+                Double Class Students
+              </span>
+              <div className="text-xl font-black text-emerald-950 font-mono">
+                {publicStudents.filter((s) => s.secondClass || (s.enrolledCourses && s.enrolledCourses.length > 1)).length}
+              </div>
+              <span className="text-[10px] text-yellow-800 font-bold block">Dual-Enrolled</span>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-white border border-emerald-200 space-y-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                English Grammar
+              </span>
+              <div className="text-xl font-black text-emerald-950 font-mono">
+                {publicStudents.filter((s) => s.admissionClass?.startsWith('Level')).length}
+              </div>
+              <span className="text-[10px] text-slate-500 block">Level Kids to Advance</span>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-white border border-emerald-200 space-y-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                Tuition Classes
+              </span>
+              <div className="text-xl font-black text-emerald-950 font-mono">
+                {publicStudents.filter((s) => !s.admissionClass?.startsWith('Level')).length}
+              </div>
+              <span className="text-[10px] text-slate-500 block">Nursery to 10th</span>
+            </div>
+          </div>
+
+          {/* SEARCH & FILTER CONTROLS */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-emerald-50/40 p-3 rounded-2xl border border-emerald-200">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              <input
+                type="text"
+                placeholder="Search student by name, roll number, or father..."
+                value={directorySearch}
+                onChange={(e) => setDirectorySearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-300 focus:border-emerald-600 outline-none bg-white font-medium"
+              />
+              {directorySearch && (
+                <button
+                  type="button"
+                  onClick={() => setDirectorySearch('')}
+                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-700"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Filter className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+              <select
+                value={directoryClassFilter}
+                onChange={(e) => setDirectoryClassFilter(e.target.value)}
+                className="px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white font-bold text-slate-700 focus:border-emerald-600 outline-none cursor-pointer"
+              >
+                <option value="All">All Programs & Classes</option>
+                <optgroup label="11 Learning Levels (English & Quran)">
+                  {LEARNING_LEVELS.map((lvl) => (
+                    <option key={lvl} value={lvl}>
+                      {lvl}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="Tuition Classes (Prep to 10th)">
+                  {TUITION_CLASSES.map((cls) => (
+                    <option key={cls} value={cls}>
+                      {cls}
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+            </div>
           </div>
 
           {loadingPublic ? (
-            <div className="py-16 text-center text-slate-400">Loading student directory...</div>
+            <div className="py-16 text-center text-slate-400 space-y-2">
+              <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
+              <span className="text-xs font-bold text-slate-600">Loading student directory...</span>
+            </div>
           ) : publicStudents.length === 0 ? (
             <div className="py-16 text-center bg-emerald-50/50 rounded-2xl border-2 border-dashed border-emerald-200 px-6">
               <Users className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
@@ -309,51 +442,90 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
               <table className="w-full text-left text-xs">
                 <thead className="bg-emerald-900 text-yellow-300 font-bold uppercase tracking-wider">
                   <tr>
-                    <th className="p-3.5">Permanent Roll No</th>
+                    <th className="p-3.5">Roll No</th>
+                    <th className="p-3.5">Photograph</th>
                     <th className="p-3.5">Student Name</th>
-                    <th className="p-3.5">Learning Level / Class</th>
-                    <th className="p-3.5">Section</th>
+                    <th className="p-3.5">Father Name</th>
+                    <th className="p-3.5">Class / Level</th>
                     <th className="p-3.5">Admission Date</th>
                     <th className="p-3.5">Status</th>
+                    <th className="p-3.5 text-center">Public Profile</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-emerald-100 font-medium">
-                  {publicStudents.map((st) => (
-                    <tr key={st.id} className="hover:bg-emerald-50/60 transition-colors">
-                      <td className="p-3.5 font-mono font-black text-emerald-900 text-sm">
-                        {st.rollNumber}
-                      </td>
-                      <td className="p-3.5 font-bold text-slate-800 flex items-center gap-2.5">
-                        <img
-                          src={st.photoUrl}
-                          alt={st.fullName}
-                          className="w-8 h-8 rounded-full object-cover border border-emerald-300 shrink-0"
-                        />
-                        <span>{st.fullName}</span>
-                      </td>
-                      <td className="p-3.5">
-                        <div className="flex flex-col gap-1 items-start">
-                          <span className="px-2.5 py-1 rounded-md bg-yellow-100 text-emerald-950 font-bold border border-yellow-300">
-                            {st.admissionClass}
-                          </span>
-                          {st.secondClass && (
-                            <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-950 font-black text-[10px] border border-amber-300 flex items-center gap-1">
-                              <Layers className="w-2.5 h-2.5 text-amber-700" />
-                              <span>Double: {st.secondClass}</span>
+                  {publicStudents
+                    .filter((st) => {
+                      if (directoryClassFilter !== 'All') {
+                        const inPrimary = st.admissionClass === directoryClassFilter;
+                        const inSecond = st.secondClass === directoryClassFilter;
+                        const inCourses = st.enrolledCourses?.includes(directoryClassFilter);
+                        if (!inPrimary && !inSecond && !inCourses) return false;
+                      }
+                      if (directorySearch.trim()) {
+                        const q = directorySearch.trim().toLowerCase();
+                        const mName = st.fullName.toLowerCase().includes(q);
+                        const mRoll = st.rollNumber.toLowerCase().includes(q);
+                        const mFather = st.fatherName.toLowerCase().includes(q);
+                        if (!mName && !mRoll && !mFather) return false;
+                      }
+                      return true;
+                    })
+                    .map((st) => (
+                      <tr key={st.id} className="hover:bg-emerald-50/60 transition-colors">
+                        <td className="p-3.5 font-mono font-black text-emerald-900 text-base">
+                          #{st.rollNumber}
+                        </td>
+                        <td className="p-3.5">
+                          <button
+                            type="button"
+                            onClick={() => setPhotoZoomModal({ url: st.photoUrl, name: st.fullName })}
+                            className="cursor-pointer group relative block"
+                            title="Click to view full photo"
+                          >
+                            <img
+                              src={st.photoUrl}
+                              alt={st.fullName}
+                              className="w-10 h-10 rounded-xl object-cover border-2 border-emerald-300 shadow-xs group-hover:scale-105 transition-transform"
+                            />
+                            <div className="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <Eye className="w-3.5 h-3.5 text-white" />
+                            </div>
+                          </button>
+                        </td>
+                        <td className="p-3.5 font-bold text-slate-900 text-sm">{st.fullName}</td>
+                        <td className="p-3.5 text-slate-600">{st.fatherName}</td>
+                        <td className="p-3.5">
+                          <div className="flex flex-col gap-1 items-start">
+                            <span className="px-2.5 py-0.5 rounded-md bg-yellow-100 text-emerald-950 font-bold border border-yellow-300">
+                              {st.admissionClass}
                             </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="p-3.5 font-mono">{st.section}</td>
-                      <td className="p-3.5 font-mono text-slate-500">{st.admissionDate}</td>
-                      <td className="p-3.5">
-                        <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px] inline-flex items-center gap-1">
-                          <Check className="w-3 h-3 text-emerald-600" />
-                          <span>Admitted</span>
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                            {st.secondClass && (
+                              <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-950 font-black text-[10px] border border-amber-300 flex items-center gap-1">
+                                <Layers className="w-2.5 h-2.5 text-amber-700" />
+                                <span>Double: {st.secondClass}</span>
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="p-3.5 font-mono text-slate-500">{st.admissionDate}</td>
+                        <td className="p-3.5">
+                          <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] inline-flex items-center gap-1 border border-emerald-300">
+                            <Check className="w-3 h-3 text-emerald-600" />
+                            <span>Enrolled & Verified</span>
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-center">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedStudentForProfile(st)}
+                            className="px-3 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-950 font-bold text-xs transition-all flex items-center gap-1.5 mx-auto cursor-pointer shadow-xs active:scale-95"
+                          >
+                            <Eye className="w-3.5 h-3.5 text-emerald-800" />
+                            <span>View Profile & ID</span>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -519,6 +691,19 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
                       <span>View Fee Account</span>
                     </button>
                   )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTab('public-directory');
+                      if (confirmationData.student) {
+                        setDirectorySearch(confirmationData.student.fullName);
+                      }
+                    }}
+                    className="px-4 py-2 rounded-xl bg-emerald-800 text-yellow-300 hover:bg-emerald-900 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-yellow-400/50"
+                  >
+                    <Eye className="w-3.5 h-3.5 text-yellow-400" />
+                    <span>View in Public Directory</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -912,6 +1097,149 @@ export const EnrollmentPage: React.FC<EnrollmentPageProps> = ({
             </form>
           </div>
         </>
+      )}
+
+      {/* PUBLIC STUDENT PROFILE & ID CARD MODAL */}
+      {selectedStudentForProfile && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border-4 border-yellow-400 animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-start justify-between border-b border-emerald-100 pb-4">
+              <div>
+                <span className="text-xs font-bold text-yellow-600 uppercase tracking-widest block">
+                  Official Student Verification
+                </span>
+                <h3 className="text-xl sm:text-2xl font-serif font-black text-emerald-950">
+                  {selectedStudentForProfile.fullName}
+                </h3>
+                <p className="text-xs text-slate-500 font-mono mt-0.5">
+                  Permanent Roll Number:{' '}
+                  <strong className="text-emerald-900 bg-yellow-200 px-2 py-0.5 rounded font-black">
+                    #{selectedStudentForProfile.rollNumber}
+                  </strong>{' '}
+                  • Status: <span className="text-emerald-700 font-bold">Enrolled & Verified</span>
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedStudentForProfile(null)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 cursor-pointer hover:bg-slate-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Generated Bi-Sided Student ID Card */}
+            <div>
+              <StudentIdCard student={selectedStudentForProfile} />
+            </div>
+
+            {/* Additional Academic Details */}
+            <div className="grid grid-cols-2 gap-3 text-xs p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200">
+              <div>
+                <span className="text-slate-500 block">Father / Guardian:</span>
+                <strong className="text-emerald-950">{selectedStudentForProfile.fatherName}</strong>
+              </div>
+              <div>
+                <span className="text-slate-500 block">Admission Date:</span>
+                <strong className="text-emerald-950 font-mono">{selectedStudentForProfile.admissionDate}</strong>
+              </div>
+              <div>
+                <span className="text-slate-500 block">Primary Program:</span>
+                <strong className="text-emerald-950">{selectedStudentForProfile.admissionClass}</strong>
+              </div>
+              <div>
+                <span className="text-slate-500 block">Section / Campus:</span>
+                <strong className="text-emerald-950">{selectedStudentForProfile.section || 'A'} • Brewery Road</strong>
+              </div>
+              {selectedStudentForProfile.secondClass && (
+                <div className="col-span-2 pt-2 border-t border-emerald-200 flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-950 font-black text-[11px] border border-amber-300">
+                    Dual Enrollment
+                  </span>
+                  <span className="text-slate-700">
+                    Also enrolled in: <strong>{selectedStudentForProfile.secondClass}</strong>
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-emerald-100">
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-bold flex items-center gap-2 hover:bg-slate-900 cursor-pointer"
+              >
+                <Printer className="w-3.5 h-3.5 text-yellow-400" />
+                <span>Print Student Card</span>
+              </button>
+
+              <div className="flex items-center gap-2">
+                {onNavigateToAttendance && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedStudentForProfile(null);
+                      onNavigateToAttendance();
+                    }}
+                    className="px-4 py-2 rounded-xl bg-emerald-950 text-yellow-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer hover:bg-emerald-900"
+                  >
+                    <CalendarCheck className="w-3.5 h-3.5 text-yellow-400" />
+                    <span>View Attendance</span>
+                  </button>
+                )}
+                {onNavigateToStudentPortal && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const roll = selectedStudentForProfile.rollNumber;
+                      setSelectedStudentForProfile(null);
+                      onNavigateToStudentPortal(roll);
+                    }}
+                    className="px-4 py-2 rounded-xl bg-yellow-400 text-emerald-950 text-xs font-black flex items-center gap-1.5 cursor-pointer hover:bg-yellow-500 shadow-xs"
+                  >
+                    <User className="w-3.5 h-3.5" />
+                    <span>Open Student Portal</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PHOTO ZOOM MODAL */}
+      {photoZoomModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 cursor-pointer"
+          onClick={() => setPhotoZoomModal(null)}
+        >
+          <div
+            className="bg-white rounded-3xl p-4 max-w-sm w-full space-y-3 border-4 border-yellow-400 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h4 className="font-serif font-black text-sm text-emerald-950">
+                {photoZoomModal.name}
+              </h4>
+              <button
+                type="button"
+                onClick={() => setPhotoZoomModal(null)}
+                className="p-1 text-slate-400 hover:text-slate-700 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <img
+              src={photoZoomModal.url}
+              alt={photoZoomModal.name}
+              className="w-full h-72 object-cover rounded-2xl border-2 border-emerald-300 shadow-inner"
+            />
+            <p className="text-[11px] text-center text-slate-500">
+              Verified Student Photograph • Oxfored Educational House
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );

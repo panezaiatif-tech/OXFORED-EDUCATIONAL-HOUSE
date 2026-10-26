@@ -90,6 +90,7 @@ export const StudentAttendancePage: React.FC<StudentAttendancePageProps> = () =>
         api.getStudents({
           class: selectedClass !== 'All' ? selectedClass : undefined,
           section: selectedSection !== 'All' ? selectedSection : undefined,
+          includeWithdrawn: false,
         }),
         api.getStudentAttendance({
           date: selectedDate,

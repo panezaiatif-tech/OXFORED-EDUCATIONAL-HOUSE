@@ -46,8 +46,22 @@ app.put('/api/settings', (req, res) => {
 });
 
 // --- Students ---
+app.get('/api/students/vacated-rolls', (req, res) => {
+  res.json(db.getVacatedRollNumbers());
+});
+
 app.get('/api/students', (req, res) => {
-  res.json(db.getStudents());
+  const { admissionClass, class: className, section, status, includeWithdrawn, search } = req.query as any;
+  res.json(
+    db.getStudents({
+      admissionClass,
+      class: className,
+      section,
+      status,
+      includeWithdrawn: includeWithdrawn === 'true' ? true : includeWithdrawn === 'false' ? false : undefined,
+      search,
+    })
+  );
 });
 
 app.get('/api/students/:id', (req, res) => {
@@ -120,6 +134,44 @@ app.patch('/api/students/:id/status', (req, res) => {
   }
 });
 
+// Reassign Student Roll Number (Dynamic, Non-permanent roll number feature)
+app.post('/api/students/:id/reassign-roll', (req, res) => {
+  try {
+    const { newRollNumber, reason, authorizedBy } = req.body;
+    if (!newRollNumber) {
+      return res.status(400).json({ error: 'New roll number is required' });
+    }
+    const student = db.reassignStudentRollNumber(
+      req.params.id,
+      newRollNumber,
+      reason || 'Administrative renumbering',
+      authorizedBy || 'Principal'
+    );
+    res.json(student);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Process Student Departure / Leaving Academy (Vacates roll number for reuse & removes from class)
+app.post('/api/students/:id/departure', (req, res) => {
+  try {
+    const { reason, notes, releaseRollNumber, authorizedBy } = req.body;
+    if (!reason) {
+      return res.status(400).json({ error: 'Departure reason is required' });
+    }
+    const result = db.processStudentDeparture(req.params.id, {
+      reason,
+      notes,
+      releaseRollNumber: releaseRollNumber !== false,
+      authorizedBy: authorizedBy || 'Principal',
+    });
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 // Course Attendance Reports
 app.get('/api/attendance/course-reports', (req, res) => {
   const { course } = req.query as { course?: string };
@@ -139,7 +191,10 @@ app.post('/api/enrollment', (req, res) => {
       return res.status(400).json({ error: 'Please provide all required enrollment details.' });
     }
 
-    const result = db.submitEnrollment(appData, autoApprove === true);
+    // Default autoApprove to true so whenever someone enrolls online or by this website,
+    // they are immediately officially enrolled, assigned their roll number, and visible to all!
+    const shouldApprove = autoApprove !== false;
+    const result = db.submitEnrollment(appData, shouldApprove);
     res.status(201).json(result);
   } catch (err: any) {
     res.status(400).json({ error: err.message });

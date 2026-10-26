@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   GraduationCap,
   BookOpen,
@@ -21,15 +21,47 @@ import {
   AlertTriangle,
   DollarSign,
   AlertCircle,
+  Search,
+  Eye,
+  X,
+  Layers,
+  Printer,
+  ExternalLink,
+  CheckCircle2,
 } from 'lucide-react';
 import { SchoolLogo } from '../components/SchoolLogo';
-import { LEARNING_LEVELS, TUITION_CLASSES } from '../types';
+import { StudentIdCard } from '../components/StudentIdCard';
+import { LEARNING_LEVELS, TUITION_CLASSES, Student, EMPTY_STUDENT_MESSAGE } from '../types';
+import { api } from '../utils/api';
 
 interface HomePageProps {
   onSelectTab: (tab: string) => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({ onSelectTab }) => {
+  const [enrolledStudents, setEnrolledStudents] = useState<Student[]>([]);
+  const [loadingStudents, setLoadingStudents] = useState(true);
+  const [studentSearch, setStudentSearch] = useState('');
+  const [selectedStudentForModal, setSelectedStudentForModal] = useState<Student | null>(null);
+
+  useEffect(() => {
+    api.getStudents()
+      .then((data) => setEnrolledStudents(data))
+      .catch((err) => console.error(err))
+      .finally(() => setLoadingStudents(false));
+  }, []);
+
+  const filteredStudents = enrolledStudents.filter((st) => {
+    if (studentSearch.trim()) {
+      const q = studentSearch.trim().toLowerCase();
+      const matchName = st.fullName.toLowerCase().includes(q);
+      const matchRoll = st.rollNumber.toLowerCase().includes(q);
+      const matchFather = st.fatherName.toLowerCase().includes(q);
+      const matchClass = st.admissionClass.toLowerCase().includes(q);
+      if (!matchName && !matchRoll && !matchFather && !matchClass) return false;
+    }
+    return true;
+  });
   return (
     <div className="space-y-12 pb-16">
       {/* 1. HERO SECTION IN EMERALD GREEN & GOLDEN YELLOW */}
@@ -86,6 +118,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectTab }) => {
                 >
                   <CreditCard className="w-4 h-4 text-yellow-400" />
                   <span>Fee Management 2026</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onSelectTab('enrolled-students')}
+                  className="px-6 py-3.5 bg-yellow-400/90 hover:bg-yellow-400 text-emerald-950 font-black text-xs uppercase tracking-wider rounded-xl transition-all border-2 border-yellow-300 cursor-pointer flex items-center gap-2 shadow-lg"
+                >
+                  <Users className="w-4 h-4 text-emerald-950" />
+                  <span>Public Enrolled Directory ({enrolledStudents.length})</span>
                 </button>
               </div>
 
@@ -411,6 +452,156 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectTab }) => {
               Coaching Class 5 to 7th • Rs. 1,000 / subject.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* 3.4 LIVE PUBLIC DIRECTORY OF ENROLLED STUDENTS */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="bg-white rounded-3xl border-2 border-emerald-200 p-6 sm:p-10 shadow-sm space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-emerald-100 pb-5">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold mb-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Live Institutional Admissions Roster</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black font-serif text-emerald-950">
+                Officially Enrolled Students Directory
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
+                Every student who enrolls online or through this website is immediately recorded in our official admissions database and is publicly visible here with verified permanent roll numbers.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="px-3.5 py-2 rounded-xl bg-emerald-100 text-emerald-900 font-mono font-bold text-xs border border-emerald-300">
+                Total Enrolled: {enrolledStudents.length}
+              </span>
+              <button
+                type="button"
+                onClick={() => onSelectTab('enrolled-students')}
+                className="px-5 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-emerald-950 font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5"
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span>View Full Public Directory</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Search on Homepage */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="relative flex-1 max-w-md">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              <input
+                type="text"
+                placeholder="Search enrolled student by name, roll no, father..."
+                value={studentSearch}
+                onChange={(e) => setStudentSearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-300 focus:border-emerald-600 outline-none font-medium"
+              />
+              {studentSearch && (
+                <button
+                  type="button"
+                  onClick={() => setStudentSearch('')}
+                  className="absolute right-3 top-2 text-slate-400 hover:text-slate-700 cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => onSelectTab('enrollment')}
+              className="px-4 py-2 rounded-xl bg-emerald-950 text-yellow-300 hover:bg-emerald-900 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
+              <span>Enroll New Student</span>
+            </button>
+          </div>
+
+          {loadingStudents ? (
+            <div className="py-12 text-center text-slate-400">Loading enrolled students...</div>
+          ) : filteredStudents.length === 0 ? (
+            <div className="py-12 text-center bg-emerald-50/50 rounded-2xl border-2 border-dashed border-emerald-200 px-6">
+              <Users className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
+              <p className="text-sm font-bold text-emerald-950">
+                {studentSearch ? 'No enrolled student matched your search query.' : EMPTY_STUDENT_MESSAGE}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredStudents.slice(0, 6).map((st) => (
+                <div
+                  key={st.id}
+                  className="p-4 rounded-2xl bg-emerald-50/40 border border-emerald-200 hover:border-yellow-400 hover:shadow-md transition-all space-y-3 flex flex-col justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={st.photoUrl}
+                      alt={st.fullName}
+                      className="w-12 h-12 rounded-xl object-cover border-2 border-yellow-400 shadow-xs shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="font-mono font-black text-emerald-900 text-sm">
+                          Roll #{st.rollNumber}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[9px] uppercase border border-emerald-300 shrink-0">
+                          Enrolled
+                        </span>
+                      </div>
+                      <h4 className="font-serif font-black text-emerald-950 text-sm truncate">
+                        {st.fullName}
+                      </h4>
+                      <p className="text-slate-500 text-[11px] truncate">
+                        Father: {st.fatherName}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5 pt-2 border-t border-emerald-100 text-xs">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="px-2 py-0.5 rounded bg-yellow-100 text-emerald-950 font-bold text-[10px] border border-yellow-300">
+                        {st.admissionClass}
+                      </span>
+                      {st.secondClass && (
+                        <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-950 font-black text-[9px] border border-amber-300 flex items-center gap-0.5">
+                          <Layers className="w-2.5 h-2.5 text-amber-700" />
+                          <span>Double: {st.secondClass}</span>
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono block">
+                      Joined: {st.admissionDate} • Section {st.section || 'A'}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStudentForModal(st)}
+                    className="w-full py-2 rounded-xl bg-white hover:bg-emerald-100 text-emerald-950 border border-emerald-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-2xs active:scale-98"
+                  >
+                    <Eye className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>View Public Profile & ID</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {filteredStudents.length > 6 && (
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={() => onSelectTab('enrolled-students')}
+                className="px-6 py-2.5 bg-emerald-950 hover:bg-emerald-900 text-yellow-300 font-bold text-xs rounded-xl uppercase tracking-wider inline-flex items-center gap-2 cursor-pointer shadow"
+              >
+                <span>View All {enrolledStudents.length} Enrolled Students in Directory</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -825,6 +1016,111 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectTab }) => {
           </div>
         </div>
       </section>
+
+      {/* PUBLIC STUDENT PROFILE MODAL ON HOMEPAGE */}
+      {selectedStudentForModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border-4 border-yellow-400 animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-start justify-between border-b border-emerald-100 pb-4">
+              <div>
+                <span className="text-xs font-bold text-yellow-600 uppercase tracking-widest block">
+                  Official Enrolled Student Record
+                </span>
+                <h3 className="text-xl sm:text-2xl font-serif font-black text-emerald-950">
+                  {selectedStudentForModal.fullName}
+                </h3>
+                <p className="text-xs text-slate-500 font-mono mt-0.5">
+                  Permanent Roll Number:{' '}
+                  <strong className="text-emerald-900 bg-yellow-200 px-2 py-0.5 rounded font-black">
+                    #{selectedStudentForModal.rollNumber}
+                  </strong>{' '}
+                  • Status: <span className="text-emerald-700 font-bold">Enrolled & Verified</span>
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedStudentForModal(null)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 cursor-pointer hover:bg-slate-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Generated Bi-Sided Student ID Card */}
+            <div>
+              <StudentIdCard student={selectedStudentForModal} />
+            </div>
+
+            {/* Academic Details */}
+            <div className="grid grid-cols-2 gap-3 text-xs p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200">
+              <div>
+                <span className="text-slate-500 block">Father / Guardian:</span>
+                <strong className="text-emerald-950">{selectedStudentForModal.fatherName}</strong>
+              </div>
+              <div>
+                <span className="text-slate-500 block">Admission Date:</span>
+                <strong className="text-emerald-950 font-mono">{selectedStudentForModal.admissionDate}</strong>
+              </div>
+              <div>
+                <span className="text-slate-500 block">Primary Program:</span>
+                <strong className="text-emerald-950">{selectedStudentForModal.admissionClass}</strong>
+              </div>
+              <div>
+                <span className="text-slate-500 block">Campus Location:</span>
+                <strong className="text-emerald-950">Brewery Road, Quetta</strong>
+              </div>
+              {selectedStudentForModal.secondClass && (
+                <div className="col-span-2 pt-2 border-t border-emerald-200 flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-950 font-black text-[11px] border border-amber-300">
+                    Dual Enrollment
+                  </span>
+                  <span className="text-slate-700">
+                    Also enrolled in: <strong>{selectedStudentForModal.secondClass}</strong>
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-emerald-100">
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-bold flex items-center gap-2 hover:bg-slate-900 cursor-pointer"
+              >
+                <Printer className="w-3.5 h-3.5 text-yellow-400" />
+                <span>Print Card</span>
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedStudentForModal(null);
+                    onSelectTab('student-attendance');
+                  }}
+                  className="px-4 py-2 rounded-xl bg-emerald-950 text-yellow-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer hover:bg-emerald-900"
+                >
+                  <CalendarCheck className="w-3.5 h-3.5 text-yellow-400" />
+                  <span>Attendance</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const roll = selectedStudentForModal.rollNumber;
+                    setSelectedStudentForModal(null);
+                    onSelectTab('student-portal');
+                  }}
+                  className="px-4 py-2 rounded-xl bg-yellow-400 text-emerald-950 text-xs font-black flex items-center gap-1.5 cursor-pointer hover:bg-yellow-500 shadow-xs"
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  <span>Student Portal</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

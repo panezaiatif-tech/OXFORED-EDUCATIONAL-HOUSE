@@ -24,6 +24,7 @@ export interface HeaderProps {
 export const navItems = [
   { id: 'home', label: 'Home' },
   { id: 'enrollment', label: 'Student Enrollment' },
+  { id: 'enrolled-students', label: 'Enrolled Students' },
   { id: 'student-portal', label: 'Student Portal' },
   { id: 'teacher-portal', label: 'Teacher Portal' },
   { id: 'results-portal', label: 'Results Portal' },

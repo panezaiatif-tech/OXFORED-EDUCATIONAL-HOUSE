@@ -46,6 +46,7 @@ export interface DatabaseSchema {
   announcements: Announcement[];
   auditLogs: AuditLog[];
   nextPermanentRollNumber: number;
+  vacatedRollNumbers?: string[];
 }
 
 const MONTHS_2026: Month2026[] = [
@@ -415,6 +416,7 @@ function seedInitialData(): DatabaseSchema {
     announcements,
     auditLogs,
     nextPermanentRollNumber: 1,
+    vacatedRollNumbers: [],
   };
 }
 
@@ -596,6 +598,7 @@ class SchoolDatabase {
           announcements: Array.isArray(parsed.announcements) ? parsed.announcements : [],
           auditLogs: Array.isArray(parsed.auditLogs) ? parsed.auditLogs : [],
           nextPermanentRollNumber: nextRoll,
+          vacatedRollNumbers: Array.isArray(parsed.vacatedRollNumbers) ? parsed.vacatedRollNumbers : [],
         };
 
         this.saveData(sanitized);
@@ -646,27 +649,265 @@ class SchoolDatabase {
     return this.data.settings;
   }
 
-  // --- Permanent Numeric Roll Number Generation (Start at 1, continues indefinitely) ---
+  // --- Dynamic Roll Number Generation (Prioritizes Vacated/Recycled Numbers, then Ascending 1, 2, 3...) ---
   public generateNextPermanentRollNumber(): string {
-    let nextNum = this.data.nextPermanentRollNumber || 1;
+    if (!this.data.vacatedRollNumbers) {
+      this.data.vacatedRollNumbers = [];
+    }
 
-    // Guarantee uniqueness against all existing students
-    const existingRolls = new Set(this.data.students.map((s) => s.rollNumber.trim()));
-    while (existingRolls.has(String(nextNum))) {
+    // 1. Prioritize reusing vacated roll numbers (gap-filling when students leave)
+    while (this.data.vacatedRollNumbers.length > 0) {
+      this.data.vacatedRollNumbers.sort((a, b) => {
+        const numA = parseInt(a, 10);
+        const numB = parseInt(b, 10);
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+        return a.localeCompare(b);
+      });
+
+      const reusedRoll = this.data.vacatedRollNumbers.shift()!.trim();
+      const activeHolder = this.data.students.find(
+        (s) => s.status === 'Active' && s.rollNumber.trim().toLowerCase() === reusedRoll.toLowerCase()
+      );
+      if (!activeHolder) {
+        this.saveData();
+        return reusedRoll;
+      }
+    }
+
+    // 2. Otherwise generate next ascending number not held by any active student
+    const activeRolls = new Set(
+      this.data.students
+        .filter((s) => s.status === 'Active')
+        .map((s) => s.rollNumber.trim().toLowerCase())
+    );
+
+    let nextNum = 1;
+    while (activeRolls.has(String(nextNum))) {
       nextNum++;
     }
 
-    this.data.nextPermanentRollNumber = nextNum + 1;
+    this.data.nextPermanentRollNumber = Math.max(
+      this.data.nextPermanentRollNumber || 1,
+      nextNum + 1
+    );
     this.saveData();
     return String(nextNum);
   }
 
+  public getVacatedRollNumbers(): string[] {
+    if (!this.data.vacatedRollNumbers) {
+      this.data.vacatedRollNumbers = [];
+    }
+    return [...this.data.vacatedRollNumbers].sort((a, b) => {
+      const numA = parseInt(a, 10);
+      const numB = parseInt(b, 10);
+      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+      return a.localeCompare(b);
+    });
+  }
+
+  public reassignStudentRollNumber(
+    studentId: string,
+    newRollNumber: string,
+    reason: string,
+    authorizedBy = 'Principal'
+  ): Student {
+    const student = this.data.students.find((s) => s.id === studentId);
+    if (!student) throw new Error('Student not found');
+
+    const cleanNewRoll = newRollNumber.trim();
+    if (!cleanNewRoll) throw new Error('New roll number is required');
+
+    // Check if another active student currently uses this roll number
+    const activeConflict = this.data.students.find(
+      (s) =>
+        s.id !== studentId &&
+        s.status === 'Active' &&
+        s.rollNumber.trim().toLowerCase() === cleanNewRoll.toLowerCase()
+    );
+    if (activeConflict) {
+      throw new Error(
+        `Roll number "${cleanNewRoll}" is currently assigned to active student ${activeConflict.fullName}`
+      );
+    }
+
+    const oldRollNumber = student.rollNumber;
+    student.previousRollNumber = oldRollNumber;
+    student.rollNumber = cleanNewRoll;
+
+    // If new roll was in vacated pool, remove it
+    if (this.data.vacatedRollNumbers) {
+      this.data.vacatedRollNumbers = this.data.vacatedRollNumbers.filter(
+        (r) => r.trim().toLowerCase() !== cleanNewRoll.toLowerCase()
+      );
+      // Place old roll number into vacated pool if numeric and not already there
+      const cleanOld = oldRollNumber.replace('WITHDRAWN-', '').trim();
+      if (cleanOld && !isNaN(parseInt(cleanOld, 10)) && !this.data.vacatedRollNumbers.includes(cleanOld)) {
+        this.data.vacatedRollNumbers.push(cleanOld);
+      }
+    }
+
+    // Regenerate QR Code Token
+    student.qrCodeToken = `OX-QR-${student.id}-${cleanNewRoll}-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+    // Cascade update to Fee Account
+    const feeAcc = this.data.feeAccounts2026.find((f) => f.studentId === student.id);
+    if (feeAcc) {
+      feeAcc.rollNumber = cleanNewRoll;
+      feeAcc.updatedAt = new Date().toISOString();
+    }
+
+    // Cascade update to Monthly Fees
+    this.data.monthlyFees2026.forEach((mf) => {
+      if (mf.studentId === student.id) {
+        mf.rollNumber = cleanNewRoll;
+      }
+    });
+
+    // Cascade update to Student Attendance
+    this.data.studentAttendance.forEach((att) => {
+      if (att.studentId === student.id) {
+        att.rollNumber = cleanNewRoll;
+      }
+    });
+
+    // Cascade update to Exam Results
+    this.data.examResults.forEach((ex) => {
+      if (ex.studentId === student.id) {
+        ex.rollNumber = cleanNewRoll;
+      }
+    });
+
+    this.addAuditLog(
+      'ROLL_NUMBER_REASSIGNED',
+      authorizedBy,
+      `Reassigned roll number for ${student.fullName}: Changed from #${oldRollNumber} to #${cleanNewRoll}. Reason: ${reason}. Historical fee, exam, and attendance records synchronized.`,
+      'STUDENT_RECORD_MODIFIED',
+      {
+        severity: 'critical',
+        targetEntity: 'Student',
+        targetId: student.id,
+        targetName: student.fullName,
+        previousState: { rollNumber: oldRollNumber },
+        newState: { rollNumber: cleanNewRoll, reason },
+      }
+    );
+
+    this.saveData();
+    return student;
+  }
+
+  public processStudentDeparture(
+    studentId: string,
+    data: {
+      reason: 'Voluntary Departure' | 'Fee Non-Payment Removal' | 'Relocation' | 'Disciplinary Expulsion' | 'Course Completed';
+      notes?: string;
+      releaseRollNumber?: boolean;
+      authorizedBy?: string;
+    }
+  ): { student: Student; releasedRollNumber?: string } {
+    const student = this.data.students.find((s) => s.id === studentId);
+    if (!student) throw new Error('Student not found');
+
+    const authorizedBy = data.authorizedBy || 'Principal';
+    const oldRoll = student.rollNumber;
+    student.status = 'Withdrawn';
+    student.qrCodeActive = false;
+    student.departureReason = data.reason;
+    student.departureDate = new Date().toISOString().split('T')[0];
+    student.departureNotes = data.notes || '';
+
+    let releasedRoll: string | undefined = undefined;
+
+    if (data.releaseRollNumber !== false) {
+      if (!this.data.vacatedRollNumbers) {
+        this.data.vacatedRollNumbers = [];
+      }
+      const rawNum = oldRoll.replace('WITHDRAWN-', '').trim();
+      if (rawNum && !isNaN(parseInt(rawNum, 10)) && !this.data.vacatedRollNumbers.includes(rawNum)) {
+        this.data.vacatedRollNumbers.push(rawNum);
+        releasedRoll = rawNum;
+      }
+      student.previousRollNumber = oldRoll;
+      student.rollNumber = `WITHDRAWN-${rawNum || oldRoll}`;
+    }
+
+    this.addAuditLog(
+      'STUDENT_DEPARTURE_PROCESSED',
+      authorizedBy,
+      `Student departure processed for ${student.fullName} (Original Roll #${oldRoll}): Status updated to Withdrawn. Reason: ${data.reason}. ${releasedRoll ? `Roll #${releasedRoll} released to vacated pool for reallocation.` : ''} Deactivated ID card and removed from active class registers.`,
+      'STUDENT_DEPARTURE_PROCESSED',
+      {
+        severity: 'critical',
+        targetEntity: 'Student',
+        targetId: student.id,
+        targetName: student.fullName,
+        previousState: { status: 'Active', rollNumber: oldRoll },
+        newState: {
+          status: 'Withdrawn',
+          departureReason: data.reason,
+          departureDate: student.departureDate,
+          releasedRollNumber: releasedRoll,
+        },
+      }
+    );
+
+    this.saveData();
+    return { student, releasedRollNumber: releasedRoll };
+  }
+
   // --- Students & Enrollment Integration ---
-  public getStudents(): Student[] {
-    // Sort strictly by permanent numeric roll number ascending
-    return [...this.data.students].sort((a, b) => {
-      const numA = parseInt(a.rollNumber, 10);
-      const numB = parseInt(b.rollNumber, 10);
+  public getStudents(filters?: {
+    admissionClass?: string;
+    class?: string;
+    section?: string;
+    status?: string;
+    includeWithdrawn?: boolean;
+    search?: string;
+  }): Student[] {
+    let list = this.data.students;
+
+    if (filters?.status && filters.status !== 'All') {
+      list = list.filter((s) => s.status === filters.status);
+    } else if (filters?.includeWithdrawn === false) {
+      list = list.filter((s) => s.status === 'Active' || s.status === 'Admitted');
+    }
+
+    const targetClass = filters?.admissionClass || filters?.class;
+    if (targetClass && targetClass !== 'All') {
+      list = list.filter((s) => {
+        const matchesPrimary = s.admissionClass === targetClass;
+        const matchesSecond = s.secondClass === targetClass;
+        const matchesCourse = s.enrolledCourses && s.enrolledCourses.some(
+          (c) => c === targetClass || c.includes(targetClass) || targetClass.includes(c)
+        );
+        return matchesPrimary || matchesSecond || matchesCourse;
+      });
+    }
+
+    if (filters?.section && filters.section !== 'All') {
+      list = list.filter((s) => s.section === filters.section);
+    }
+
+    if (filters?.search) {
+      const q = filters.search.toLowerCase();
+      list = list.filter(
+        (s) =>
+          s.fullName.toLowerCase().includes(q) ||
+          s.rollNumber.toLowerCase().includes(q) ||
+          s.fatherName.toLowerCase().includes(q)
+      );
+    }
+
+    // Sort strictly by roll number ascending (active numeric first, then withdrawn)
+    return [...list].sort((a, b) => {
+      const isAWithdrawn = a.rollNumber.startsWith('WITHDRAWN-') || a.status === 'Withdrawn';
+      const isBWithdrawn = b.rollNumber.startsWith('WITHDRAWN-') || b.status === 'Withdrawn';
+      if (isAWithdrawn && !isBWithdrawn) return 1;
+      if (!isAWithdrawn && isBWithdrawn) return -1;
+
+      const numA = parseInt(a.rollNumber.replace('WITHDRAWN-', ''), 10);
+      const numB = parseInt(b.rollNumber.replace('WITHDRAWN-', ''), 10);
       if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
       return a.rollNumber.localeCompare(b.rollNumber);
     });
@@ -677,8 +918,12 @@ class SchoolDatabase {
   }
 
   public getStudentByRoll(rollNumber: string): Student | undefined {
+    const clean = rollNumber.trim().toLowerCase();
     return this.data.students.find(
-      (s) => s.rollNumber.trim().toLowerCase() === rollNumber.trim().toLowerCase()
+      (s) =>
+        s.rollNumber.trim().toLowerCase() === clean ||
+        s.previousRollNumber?.trim().toLowerCase() === clean ||
+        (s.rollNumber.startsWith('WITHDRAWN-') && s.rollNumber.replace('WITHDRAWN-', '').trim().toLowerCase() === clean)
     );
   }
 
@@ -689,7 +934,7 @@ class SchoolDatabase {
   // Mandatory Photograph Upload & Strict Real-Student Validation
   public submitEnrollment(
     appData: Omit<EnrollmentApplication, 'id' | 'createdAt' | 'status'>,
-    autoApprove = false
+    autoApprove = true
   ): { application: EnrollmentApplication; student?: Student; feeAccount?: FeeAccount2026 } {
     // Validate required student photograph
     if (!appData.photoUrl || appData.photoUrl.trim() === '') {

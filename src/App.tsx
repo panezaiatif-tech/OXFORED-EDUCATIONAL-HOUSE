@@ -55,6 +55,17 @@ export default function App() {
             onNavigateToStudentPortal={handleNavigateToStudentPortal}
             onNavigateToAttendance={() => setCurrentTab('student-attendance')}
             isAdmin={currentRole === 'admin'}
+            initialTab="admission-form"
+          />
+        );
+      case 'enrolled-students':
+        return (
+          <EnrollmentPage
+            onNavigateToFees={() => setCurrentTab('fee-management')}
+            onNavigateToStudentPortal={handleNavigateToStudentPortal}
+            onNavigateToAttendance={() => setCurrentTab('student-attendance')}
+            isAdmin={currentRole === 'admin'}
+            initialTab="public-directory"
           />
         );
       case 'student-portal':

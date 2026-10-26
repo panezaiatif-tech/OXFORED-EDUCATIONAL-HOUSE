@@ -61,7 +61,7 @@
       "admissionDate": "2026-04-15",
       "enrollmentDate": "2026-04-15",
       "status": "Active",
-      "qrCodeToken": "OX-QR-stu_1792964175752_51-1-mvocks5k-5X60OX",
+      "qrCodeToken": "OX-QR-stu_1792964175752_51-1-mvp5rpiy-32GNWS",
       "qrCodeActive": true,
       "requiredDocuments": [
         "B-Form",
@@ -69,7 +69,39 @@
       ],
       "photoVerified": true,
       "verificationNotes": "Genuine photograph uploaded during admission",
-      "createdAt": "2026-10-25T21:36:15.752Z"
+      "createdAt": "2026-10-25T21:36:15.752Z",
+      "previousRollNumber": "999"
+    },
+    {
+      "id": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "fullName": "Zainab Panezai",
+      "fatherName": "Atif Panezai",
+      "fatherPhone": "03327185311",
+      "dob": "2015-08-20",
+      "gender": "Female",
+      "photoUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=400",
+      "phone": "03327185311",
+      "address": "Brewery Road near SBK University, Quetta",
+      "previousSchool": "N/A",
+      "admissionClass": "Level One",
+      "secondClass": "Class 4",
+      "isDoubleClass": true,
+      "enrolledCourses": [
+        "Level One",
+        "Class 4"
+      ],
+      "section": "A",
+      "academicSession": "2026-2027",
+      "admissionDate": "2026-10-26",
+      "enrollmentDate": "2026-10-26",
+      "status": "Active",
+      "qrCodeToken": "OX-QR-stu_1793015165716_675-2-mvp6xo9h-KJOUQM",
+      "qrCodeActive": true,
+      "requiredDocuments": [],
+      "photoVerified": true,
+      "verificationNotes": "Genuine photograph uploaded during admission",
+      "createdAt": "2026-10-26T11:46:05.717Z"
     }
   ],
   "teachers": [
@@ -174,6 +206,30 @@
     }
   ],
   "applications": [
+    {
+      "fullName": "Zainab Panezai",
+      "fatherName": "Atif Panezai",
+      "dob": "2015-08-20",
+      "gender": "Female",
+      "phone": "03327185311",
+      "address": "Brewery Road near SBK University, Quetta",
+      "photoUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=400",
+      "admissionClass": "Level One",
+      "isDoubleClass": true,
+      "secondClass": "Class 4",
+      "section": "A",
+      "enrolledCourses": [
+        "Level One",
+        "Class 4"
+      ],
+      "id": "app_1793015165715_681",
+      "status": "Approved",
+      "photoVerificationStatus": "Genuine User Upload",
+      "createdAt": "2026-10-26T11:46:05.715Z",
+      "generatedRollNumber": "2",
+      "studentId": "stu_1793015165716_675",
+      "reviewRemarks": "Approved by System Auto-Approval Policy on 2026-10-26"
+    },
     {
       "fullName": "Muhammad Bilal",
       "fatherName": "Haji Abdul Rehman",
@@ -543,7 +599,29 @@
       "remainingBalance": 36200,
       "paymentStatus": "Unpaid",
       "createdAt": "2026-10-25T21:36:15.752Z",
-      "updatedAt": "2026-10-25T21:36:15.752Z"
+      "updatedAt": "2026-10-26T11:13:27.802Z"
+    },
+    {
+      "id": "fee_stu_1793015165716_675",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "fatherName": "Atif Panezai",
+      "class": "Level One",
+      "section": "A",
+      "admissionDate": "2026-10-26",
+      "guardianPhone": "03327185311",
+      "academicSession": "2026-2027",
+      "monthlyTuitionFee": 2500,
+      "admissionFee": 5000,
+      "otherApprovedCharges": 1200,
+      "discountsOrWaivers": 0,
+      "totalFeeDue": 36200,
+      "amountPaid": 0,
+      "remainingBalance": 36200,
+      "paymentStatus": "Unpaid",
+      "createdAt": "2026-10-26T11:46:05.717Z",
+      "updatedAt": "2026-10-26T11:46:05.717Z"
     }
   ],
   "monthlyFees2026": [
@@ -738,6 +816,198 @@
       "remainingBalance": 2500,
       "paymentDueDate": "2026-12-10",
       "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_January_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "January",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 6200,
+      "discounts": 0,
+      "totalAmountDue": 8700,
+      "amountPaid": 0,
+      "remainingBalance": 8700,
+      "paymentDueDate": "2026-01-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_February_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "February",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-02-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_March_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "March",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-03-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_April_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "April",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-04-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_May_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "May",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-05-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_June_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "June",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-06-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_July_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "July",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-07-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_August_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "August",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-08-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_September_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "September",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-09-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_October_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "October",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-10-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_November_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "November",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-11-10",
+      "paymentStatus": "Unpaid"
+    },
+    {
+      "id": "mf_stu_1793015165716_675_December_2026",
+      "studentId": "stu_1793015165716_675",
+      "rollNumber": "2",
+      "studentName": "Zainab Panezai",
+      "class": "Level One",
+      "month": "December",
+      "monthlyTuitionFee": 2500,
+      "otherApplicableCharges": 0,
+      "discounts": 0,
+      "totalAmountDue": 2500,
+      "amountPaid": 0,
+      "remainingBalance": 2500,
+      "paymentDueDate": "2026-12-10",
+      "paymentStatus": "Unpaid"
     }
   ],
   "feeReceipts": [],
@@ -875,6 +1145,189 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "audit_1793015165717_2616",
+      "action": "APPLICATION_APPROVED",
+      "actionType": "APPLICATION_APPROVED",
+      "performedBy": "System Auto-Approval Policy",
+      "role": "Administrator",
+      "targetEntity": "Student",
+      "targetId": "stu_1793015165716_675",
+      "targetName": "Zainab Panezai",
+      "details": "Officially admitted Zainab Panezai with Permanent Roll Number 2 in Level One. 2026 Fee Account synced.",
+      "newState": {
+        "rollNumber": "2",
+        "admissionClass": "Level One",
+        "feeAccountId": "fee_stu_1793015165716_675",
+        "totalDue": 36200
+      },
+      "severity": "warning",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-26T11:46:05.717Z"
+    },
+    {
+      "id": "audit_1793015165716_6814",
+      "action": "SUBMIT_ENROLLMENT",
+      "actionType": "ENROLLMENT_STATUS_UPDATED",
+      "performedBy": "Online Applicant",
+      "role": "Administrator",
+      "targetEntity": "EnrollmentApplication",
+      "targetId": "app_1793015165715_681",
+      "targetName": "Zainab Panezai",
+      "details": "Submitted admission application for Zainab Panezai in Level One. Photograph uploaded and verified.",
+      "newState": {
+        "fullName": "Zainab Panezai",
+        "class": "Level One",
+        "photoUploaded": true
+      },
+      "severity": "info",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-26T11:46:05.716Z"
+    },
+    {
+      "id": "audit_1793013216991_5542",
+      "action": "APPLICATION_APPROVED",
+      "actionType": "APPLICATION_APPROVED",
+      "performedBy": "System Auto-Approval Policy",
+      "role": "Administrator",
+      "targetEntity": "Student",
+      "targetId": "stu_1793013216991_79",
+      "targetName": "Next Enrolled Student",
+      "details": "Officially admitted Next Enrolled Student with Permanent Roll Number 999 in Level Two. 2026 Fee Account synced.",
+      "newState": {
+        "rollNumber": "999",
+        "admissionClass": "Level Two",
+        "feeAccountId": "fee_stu_1793013216991_79",
+        "totalDue": 24200
+      },
+      "severity": "warning",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-26T11:13:36.991Z"
+    },
+    {
+      "id": "audit_1793013216990_873",
+      "action": "SUBMIT_ENROLLMENT",
+      "actionType": "ENROLLMENT_STATUS_UPDATED",
+      "performedBy": "Online Applicant",
+      "role": "Administrator",
+      "targetEntity": "EnrollmentApplication",
+      "targetId": "app_1793013216990_253",
+      "targetName": "Next Enrolled Student",
+      "details": "Submitted admission application for Next Enrolled Student in Level Two. Photograph uploaded and verified.",
+      "newState": {
+        "fullName": "Next Enrolled Student",
+        "class": "Level Two",
+        "photoUploaded": true
+      },
+      "severity": "info",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-26T11:13:36.990Z"
+    },
+    {
+      "id": "audit_1793013216980_4469",
+      "action": "STUDENT_DEPARTURE_PROCESSED",
+      "actionType": "STUDENT_DEPARTURE_PROCESSED",
+      "performedBy": "Principal",
+      "role": "Administrator",
+      "targetEntity": "Student",
+      "targetId": "stu_1793013216965_108",
+      "targetName": "Test Candidate",
+      "details": "Student departure processed for Test Candidate (Original Roll #999): Status updated to Withdrawn. Reason: Relocation. Roll #999 released to vacated pool for reallocation. Deactivated ID card and removed from active class registers.",
+      "previousState": {
+        "status": "Active",
+        "rollNumber": "999"
+      },
+      "newState": {
+        "status": "Withdrawn",
+        "departureReason": "Relocation",
+        "departureDate": "2026-10-26",
+        "releasedRollNumber": "999"
+      },
+      "severity": "critical",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-26T11:13:36.980Z"
+    },
+    {
+      "id": "audit_1793013216965_3746",
+      "action": "APPLICATION_APPROVED",
+      "actionType": "APPLICATION_APPROVED",
+      "performedBy": "System Auto-Approval Policy",
+      "role": "Administrator",
+      "targetEntity": "Student",
+      "targetId": "stu_1793013216965_108",
+      "targetName": "Test Candidate",
+      "details": "Officially admitted Test Candidate with Permanent Roll Number 999 in Level One. 2026 Fee Account synced.",
+      "newState": {
+        "rollNumber": "999",
+        "admissionClass": "Level One",
+        "feeAccountId": "fee_stu_1793013216965_108",
+        "totalDue": 24200
+      },
+      "severity": "warning",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-26T11:13:36.965Z"
+    },
+    {
+      "id": "audit_1793013216964_1990",
+      "action": "SUBMIT_ENROLLMENT",
+      "actionType": "ENROLLMENT_STATUS_UPDATED",
+      "performedBy": "Online Applicant",
+      "role": "Administrator",
+      "targetEntity": "EnrollmentApplication",
+      "targetId": "app_1793013216964_418",
+      "targetName": "Test Candidate",
+      "details": "Submitted admission application for Test Candidate in Level One. Photograph uploaded and verified.",
+      "newState": {
+        "fullName": "Test Candidate",
+        "class": "Level One",
+        "photoUploaded": true
+      },
+      "severity": "info",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-26T11:13:36.964Z"
+    },
+    {
+      "id": "audit_1793013207802_8092",
+      "action": "ROLL_NUMBER_REASSIGNED",
+      "actionType": "STUDENT_RECORD_MODIFIED",
+      "performedBy": "Admin",
+      "role": "Administrator",
+      "targetEntity": "Student",
+      "targetId": "stu_1792964175752_51",
+      "targetName": "Muhammad Bilal",
+      "details": "Reassigned roll number for Muhammad Bilal: Changed from #999 to #1. Reason: Revert Test. Historical fee, exam, and attendance records synchronized.",
+      "previousState": {
+        "rollNumber": "999"
+      },
+      "newState": {
+        "rollNumber": "1",
+        "reason": "Revert Test"
+      },
+      "severity": "critical",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-26T11:13:27.802Z"
+    },
+    {
+      "id": "audit_1793013207795_8645",
+      "action": "ROLL_NUMBER_REASSIGNED",
+      "actionType": "STUDENT_RECORD_MODIFIED",
+      "performedBy": "Admin",
+      "role": "Administrator",
+      "targetEntity": "Student",
+      "targetId": "stu_1792964175752_51",
+      "targetName": "Muhammad Bilal",
+      "details": "Reassigned roll number for Muhammad Bilal: Changed from #1 to #999. Reason: Test Reassignment. Historical fee, exam, and attendance records synchronized.",
+      "previousState": {
+        "rollNumber": "1"
+      },
+      "newState": {
+        "rollNumber": "999",
+        "reason": "Test Reassignment"
+      },
+      "severity": "critical",
+      "ipAddress": "192.168.10.1 (Campus LAN - Quetta)",
+      "timestamp": "2026-10-26T11:13:27.795Z"
+    },
     {
       "id": "audit_1792964175753_3410",
       "action": "APPLICATION_APPROVED",
@@ -1212,5 +1665,6 @@
       "timestamp": "2026-10-14T09:05:00Z"
     }
   ],
-  "nextPermanentRollNumber": 2
+  "nextPermanentRollNumber": 3,
+  "vacatedRollNumbers": []
 }
